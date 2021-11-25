@@ -64,6 +64,17 @@ const routes = [
       title: '找回密码'
     }
   },
+  // 入库
+  {
+    path: '/warehousing',
+    name: 'Warehousing',
+    component: () => import('@/views/personal/warehousing'),
+    meta: {
+      title: '样本入库',
+      showTab: true,
+      keepAlive: true
+    }
+  },
   // 分类
   {
     path: '/category',

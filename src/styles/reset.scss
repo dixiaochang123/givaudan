@@ -129,12 +129,14 @@ table {
 }
 
 .van-nav-bar__content {
-  background: rgba(86, 131, 255, 1);
+  background: #ffffff;
   .van-nav-bar__title.van-ellipsis {
-    color: #ffffff !important;
+    color: #000000 !important;
+    font-weight: bold;
   }
   .van-icon {
-    color: #ffffff !important;
+    color: #000000 !important;
+    font-weight: bold;
   }
 }
 

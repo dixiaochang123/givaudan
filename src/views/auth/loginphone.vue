@@ -8,21 +8,19 @@
       @click-left="onClickLeft"
       @click-right="onClickRight"
     /> -->
-    <div style="height:30px;"></div>
+    <!-- <div style="height:30px;"></div> -->
     <div class="header">
-      <!-- <van-image
-        width="156"
-        height="156"
-        src="../../assets/yiqilai/login/logo@3x.png"
-      /> -->
-      <div class="imags">
-        <img  src="../../assets/yiqilai/login/logo@3x.png" alt="">
+      <div class="images">
+        <img src="../../assets/qihuadun/logo.png" alt="" srcset="">
       </div>
-      <h3 style="text-align: center;"><span style="color:#566BFF;">“一企来”</span>一起来~</h3>
-      <p style="text-align: center;">“为企业开通一键直达的服务快速通道”</p>
-      <div class="imags1">
+      <div class="flexs">
+        <p style="text-align: left;color: #FFFFFF;font-size: 20px;">奇华顿样本</p>
+        <p style="text-align: left;color: #FFFFFF;font-size: 16px;">管理系统</p>
+
+      </div>
+      <!-- <div class="imags1">
         <img  src="../../assets/yiqilai/login/插画@3x.png" alt="">
-      </div>
+      </div> -->
     </div>
 
     <van-form
@@ -31,11 +29,11 @@
       :show-error="false"
       @submit="onSubmit"
     >
-    <p class="p1">快捷登录</p>
+    <p class="p1" style="visibility: hidden;">快捷登录</p>
     <p class="p2" style="visibility: hidden;"></p>
-    <p class="p2"></p>
+    <p class="p2" style="visibility: hidden;"></p>
+    <p class="label">账号</p>
       <van-field
-       left-icon="friends-o"
       class="phone"
       style="background:none;"
         v-model="form.mobile"
@@ -50,20 +48,8 @@
           },
         ]"
       />
-
-      <!-- <van-field
-        v-model="form.password"
-        type="password"
-        required
-        center
-        clearable
-        name="密码"
-        label="密码"
-        placeholder="密码"
-        :rules="[{ required: true, message: '请输入正确的密码！' }]"
-      /> -->
+      <p class="label">密码</p>
       <van-field
-       left-icon="bag-o"
       style="background:none;"
         v-model="form.code"
         center
@@ -79,9 +65,8 @@
       </van-field>
       <!-- <van-button style="float: right;" to="/orderinfo" size="small" type="primary">注册</van-button> -->
 
-      <div style="margin: 30px">
+      <div style="margin-top: 30px">
         <van-button
-          round
           block
           :loading="loading"
           type="info"
@@ -225,9 +210,10 @@ export default {
   height: 100vh;
   // background: url(../../assets/login/bg.png) no-repeat  center;
   // background-size: cover;
-  background-color: #F4F7F9;
+  // background-color: #F4F7F9;
+  background-color: #ffffff;
   display:flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   flex-direction: column;
   // align-items: center;
   .van-nav-bar {
@@ -237,43 +223,39 @@ export default {
     }
   }
   .header {
-    padding-left: 30px;
-    padding-right: 25px;
-    text-align: center;
+    background: url('../../assets/qihuadun/组 1.png') no-repeat  right bottom;
+    background-size: cover;
+    // padding-left: 30px;
+    // padding-right: 25px;
     box-sizing: border-box;
-    .imags {
-      width: 156px;
-      height: 156px;
-      background: #FFFFFF;
-      box-shadow: 0px 9px 43px 2px rgba(0, 18, 148, 0.05);
-      border-radius: 33px;
-      padding:40px 26px;
+    height: 500px;
+    position: relative;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    // flex-direction: column;
+
+    p{
+
+      color: #FFFFFF;
+    }
+    
+    .images {
+      width: 100px;
+      height: 100px;
       box-sizing: border-box;
-      margin: 0 auto;
+      margin-left: 50px;
+      margin-right: 20px;
       img {
         width: 100%;
         height: 100%;
       }
     }
-    .imags1 {
-      width: 527px;
-      height: 362px;
-      margin: 0 auto;
-      background:url("../../assets/yiqilai/login/模糊背景.png") no-repeat center center;
-      background-size: contain;
-      padding:40px 26px;
-      box-sizing: border-box;
-      img {
-        width: 100%;
-        height: 100%;
-      }
-    }
-    h3 {
-      padding-top: 62px;
-      font-size: 60px;
-      font-family: PingFang SC;
-      font-weight: bold;
-      color: #3A3A3A;
+    .flexs {
+      height: 100px;
+      display: flex;
+      justify-content: space-between;
+      flex-direction: column;
     }
     p {
       // height: 17px;
@@ -281,7 +263,6 @@ export default {
       font-family: PingFang SC;
       font-weight: 400;
       color: #999999;
-      padding-top: 13px;
       span {
         color: #FF5959;
       }
@@ -293,8 +274,15 @@ export default {
 
   .form {
     // background: red;
+    position: relative;
+    z-index: 1;
+    margin-top: -50px;
     padding: 24px 45px;
-    margin-top: 50px;
+    // margin-top: 50px;
+    background-color: #fff;
+    border-top-left-radius: 60px;
+    border-top-right-radius: 60px;
+    height: calc(100vh - 500px);
     .p1 {
       font-size: 43px;
       font-family: PingFangSC;
@@ -310,7 +298,7 @@ export default {
       line-height: 48px;
     }
     .van-cell.van-field {
-      background-color: none !important;
+      background-color: #F2F2F4 !important;
     }
     .phone {
       ::v-deep .van-field__label {
@@ -334,9 +322,14 @@ export default {
     .van-button--info {
       // width: 600px;
       // height: 80px;
-      background: #ffffff;
+      background: #2D92FA;
       border:none;
       color: #313A52;
+      width: 100%;
+      font-size: 16px;
+font-family: PingFang SC;
+font-weight: 500;
+color: #FFFFFF;
     }
     input:-internal-autofill-selected {
         box-shadow: inset 0 0 0 1000px #281840 !important; // 改变了背景色
@@ -364,7 +357,14 @@ export default {
   }
 }
 ::v-deep .van-field {
-  border-bottom: solid 1px rgba(0,0, 0, 0.05);
+  // border-bottom: solid 1px rgba(0,0, 0, 0.05);
 }
-
+.label {
+  height: 100px;;
+  line-height: 100px;
+  font-size: 28px;
+font-family: PingFang SC;
+font-weight: 500;
+color: #999999;
+}
 </style>
