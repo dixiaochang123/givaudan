@@ -9,3 +9,18 @@ export function getHomeList(data) {
       data
     })
   }
+  //4、	获取留样柜类型
+export function getComboxFromJson() {
+    return request({
+      url: `/qc_web/sys/getComboxFromJson`,
+      method: 'post',
+      data:{
+        "TABLE":"t_sys_data",
+        "WHERE":"pid=SARK",	
+        "ORDERBY":"sorder asc",
+        "FIELD":"",			
+        "GROUPBY":""	
+    
+      }
+    })
+  }

@@ -77,6 +77,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import {getComboxFromJson} from "@/api/personal"
 let ylicon = require('../../assets/qihuadun/原料.png')
 let pcicon = require('../../assets/qihuadun/批次.png')
 let bzicon = require('../../assets/qihuadun/包装.png')
@@ -127,9 +128,18 @@ export default {
     ...mapGetters(["userInfo"])
   },
   mounted() {
-
+    this.getComboxFromJson()
   },
   methods: {
+    getComboxFromJson() {
+      getComboxFromJson().then(res=>{
+        let {code,data}= res;
+        if(code==0) {
+          console.log(data)
+        }
+      }).catch(error=>console.log(error))
+
+    },
     onClickLeft() {
       this.$router.go(-1); //返回上一层
     },
@@ -159,7 +169,6 @@ export default {
     },
     savinfo() {
       if(!!this.active3) {
-
         this.addressInfo.wz = this.active1+'-'+this.active2+'-'+this.active3
       } else {
         this.active1 = "";
