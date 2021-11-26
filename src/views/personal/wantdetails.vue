@@ -3,261 +3,170 @@
     <van-nav-bar title="样本入库" left-text="" left-arrow fixed @click-left="onClickLeft" />
     <div style="height: 46px"></div>
     <van-form @submit="onSubmit">
-      <van-field readonly label="样本：21016436"  />
-      <van-field v-model="userInfo.ORG_ID_" readonly label="原料" placeholder="请输入您所在的企业" :rules="[{ required: true, message: '请填写企业名称' }]" />
-      <van-field v-model="userInfo.REAL_NAME" readonly label="批次" placeholder="请输入上报人" :rules="[{ required: true, message: '请填写上报人' }]" />
-      <van-field v-model="userInfo.REAL_NAME" readonly label="包装" placeholder="请输入上实际地址" :rules="[{ required: true, message: '请填写上实际地址' }]" />
-      <van-field v-model="userInfo.REAL_NAME" readonly label="质保期" placeholder="请输入上实际地址" :rules="[{ required: true, message: '请填写上实际地址' }]" />
-      <van-field v-model="addressInfo.SER_TYPE_" name="SER_TYPE" readonly :rules="[{ required: true, message: '请选择服留样柜' }]" label="请选择留样柜" right-icon="arrow" @click="showname = true" />
-      <van-field v-model="addressInfo.SER_TYPE_" name="SER_TYPE" readonly :rules="[{ required: true, message: '请选择服留样柜' }]" label="具体位置" right-icon="arrow" @click="showname = true" />
+      <van-field :left-icon="ylicon" v-model="addressInfo.yl" readonly label="原料"   />
+      <van-field :left-icon="pcicon" v-model="addressInfo.pc" readonly label="批次"  />
+      <van-field :left-icon="bzicon" v-model="addressInfo.bz" readonly label="包装"  />
+      <van-field :left-icon="zbqicon" v-model="addressInfo.zbq" readonly label="质保期"  />
+      <van-field :left-icon="lygficon" v-model="addressInfo.lyg" readonly :rules="[{ required: true, message: '请选择服留样柜' }]" label="请选择留样柜" right-icon="arrow" @click="showname = true" />
+      <van-field :left-icon="wzicon" v-model="addressInfo.wz" readonly :rules="[{ required: true, message: '请选择具体位置' }]" label="具体位置" right-icon="arrow" @click="showname1 = true" />
       <div style="margin: 16px">
         <van-button class="see" block type="info" native-type="submit">入库</van-button>
       </div>
     </van-form>
 
-    <!-- <van-popup v-model="showArea" position="bottom">
-      <van-area title="请选择所在地区" :area-list="areaList" @confirm="onConfirm" @change="change" @cancel="showArea = false" />
-    </van-popup> -->
     <van-popup v-model="showname" position="bottom">
+      <van-picker title="" show-toolbar :columns="columns" @confirm="onConfirm1" @cancel="showname = false" @change="onChange" />
+    </van-popup>
+
+    <van-popup v-model="showname1" position="bottom">
+      <p style="visibility: hidden;">具体位置</p>
+      <p>具体位置</p>
+      <p style="visibility: hidden;">具体位置</p>
      <div class="selet" style="height:200px;">
        <div>
          <p>选择留样柜</p>
-         <div>
-           <p>FCFG01</p>
-           <p>FCFG02</p>
-           <p>FCFG03</p>
-           <p>FCFG04</p>
+         <div class="texts" @click="handleclickactive1">
+           <p :class="[active1=='FCFG01'?'active':'']" id="FCFG01">FCFG01</p>
+           <p :class="[active1=='FCFG02'?'active':'']" id="FCFG02">FCFG02</p>
+           <p :class="[active1=='FCFG03'?'active':'']" id="FCFG03">FCFG03</p>
+           <p :class="[active1=='FCFG04'?'active':'']" id="FCFG04">FCFG04</p>
          </div>
        </div>
        <div>
          <p>选择托盘</p>
-         <div>
-           <p>A01托盘</p>
-           <p>A02托盘</p>
-           <p>A03托盘</p>
-           <p>A04托盘</p>
+         <div class="texts" @click="handleclickactive2">
+           <p :class="[active2=='A01托盘'?'active':'']" id="A01托盘">A01托盘</p>
+           <p :class="[active2=='A02托盘'?'active':'']" id="A02托盘">A02托盘</p>
+           <p :class="[active2=='A03托盘'?'active':'']" id="A03托盘">A03托盘</p>
+           <p :class="[active2=='A04托盘'?'active':'']" id="A04托盘">A04托盘</p>
          </div>
 
        </div>
        <div>
          <p>选择编号</p>
-         <div>
-           <p>#1-55#</p>
-           <p>#1-56#</p>
-           <p>#1-57#</p>
-           <p>#1-58#</p>
+         <div class="texts" @click="handleclickactive3">
+           <p :class="[active3=='#1-55#'?'active':'']" id="#1-55#">#1-55#</p>
+           <p :class="[active3=='#1-56#'?'active':'']" id="#1-56#">#1-56#</p>
+           <p :class="[active3=='#1-57#'?'active':'']" id="#1-57#">#1-57#</p>
+           <p :class="[active3=='#1-58#'?'active':'']" id="#1-58#">#1-58#</p>
          </div>
 
        </div>
-
      </div>
-      <van-button class="see" block type="info" native-type="submit">入库</van-button>
+    <van-button class="qren" block type="info" @click="savinfo">确认</van-button>
       <!-- <van-picker title="" show-toolbar :columns="columns" @confirm="onConfirm1" @cancel="showname = false" @change="onChange" /> -->
     </van-popup>
-    <!-- <van-popup v-model="showname" position="bottom">
-      
-    </van-popup> -->
-    <!-- <van-button class="see" round type="info" @click="seeOrder"
-      >保存并使用</van-button
-    > -->
+    <van-dialog width="320" v-model="show1" title="" show-cancel-button @confirm="confirm">
+      <img class="rukuimg" style="width: 60%;" src="../../assets/qihuadun/是否.png" />
+      <p class="rukup">是否入库</p>
+    </van-dialog>
+    <van-dialog width="320" v-model="show2" title="">
+      <p class="rukup" style="visibility: hidden;">入库成功</p>
+      <img class="rukuimg" style="width: 20%;" src="../../assets/qihuadun/成功.png" />
+      <p class="rukup">入库成功</p>
+      <p class="rukup" style="visibility: hidden;">入库成功</p>
+    </van-dialog>
+    <van-dialog width="320" v-model="show3" title="">
+      <p class="rukup" style="visibility: hidden;">入库错误</p>
+      <img class="rukuimg" style="width: 20%;" src="../../assets/qihuadun/错误.png" />
+      <p class="rukup">入库失败</p>
+      <p class="rukup" style="visibility: hidden;">入库错误</p>
+    </van-dialog>
   </div>
 </template>
 
 <script>
-import { Toast } from "vant";
 import { mapGetters } from "vuex";
-import axios from "axios";
-import { appealSave, getsysCombox } from "@/api/personal";
-const config = require("../../utils/config");
-import { Dialog } from "vant";
+let ylicon = require('../../assets/qihuadun/原料.png')
+let pcicon = require('../../assets/qihuadun/批次.png')
+let bzicon = require('../../assets/qihuadun/包装.png')
+let zbqicon = require('../../assets/qihuadun/质保期.png')
+let wzicon = require('../../assets/qihuadun/位置.png')
+let jlbficon = require('../../assets/qihuadun/报废.png')
+let lygficon = require('../../assets/qihuadun/留样柜.png')
 export default {
-  name: "Confirmorder",
+  name: "Warehousing",
   components: {},
   data() {
     return {
-      name: "",
-      mobile: "",
-      area: "",
-      area1: [],
-      address: "",
+      active1:'',
+      active2:'',
+      active3:'',
       showArea: false,
       showname: false,
-      // areaList,
-      hotcities: [],
+      columns:[
+        'FCFG01',
+        'FCFG02',
+        'FCFG03',
+        'FCFG04',
+        'FCFG05',
+      ],
+      showname1: false,
+      show1:false,
+      show2:false,
+      show3:false,
       addressInfo: {
-        NAME: "",
-        CONTENT: "",
-        SER_TYPE: "",
-        SER_TYPE_: "",
-        ATTACHS: "",
-        USER_ID: "",
-        ID: "",
-        // phone: '',
-        // address: "",
-        // provinceID: '',
-        // cityID: '',
-        // areaID: '',
-        // utype:"kuhu"
+          yb:'样本：21016436',
+        yl:'zsq015azs',
+        pc:'cz00002540',
+        bz:'cz01',
+        zbq:'2022-09-28',
+        lyg:'FCFG01',
+        wz:'',
       },
-      columns: ["杭州", "宁波", "温州", "绍兴", "湖州", "嘉兴", "金华", "衢州"],
-      sysCombox: [],
-      fileList: [],
-      uploadImages: [],
-
-      // uid: 999845591,
-      // utype: kuhu,
-      // provinceID: 110000,
-      // cityID: ,
-      // areaID: ,
-      // address: 大V发地址,
-      // NAME: 呵呵呵,
-      // mobile: 13611366910,
+      ylicon,
+      pcicon,
+      bzicon,
+      zbqicon,
+      wzicon,
+      jlbficon,
+      lygficon
     };
   },
   computed: {
-    ...mapGetters(["userInfo"]),
-    key() {
-      return this.$route.fullPath;
-    },
+    ...mapGetters(["userInfo"])
   },
   mounted() {
-    this.addressInfo.USER_ID = this.userInfo.ID;
-    this.getsysCombox();
+
   },
   methods: {
-    getsysCombox() {
-      getsysCombox()
-        .then((res) => {
-          console.log(res);
-          this.sysCombox = res;
-          this.columns = res.map((item) => item.NAME);
-        })
-        .catch((error) => console.log(error));
-    },
-    // 校检手机号码
-    checkMobile(value) {
-      const reg = /^1[3456789]\d{9}$/;
-      return reg.test(value);
-    },
     onClickLeft() {
       this.$router.go(-1); //返回上一层
     },
-    onConfirm1(value, index) {
-      this.addressInfo.SER_TYPE_ = value;
-      this.addressInfo.SER_TYPE = this.sysCombox[index].VALUE;
-      this.showname = false;
+    onConfirm1(val,index) {
+      console.log(val)
+      this.addressInfo.lyg = val;
+      this.showname = false
+
     },
-    onChange(picker, value, index) {},
-    onCancel() {
-      // Toast('取消');
+    onChange() {
+
     },
-    change(picker, value, index) {
-      // console.log('索引',picker, value, index)
-      // this.GetCity(value[0].code);
+    confirm() {
+        this.show2 = true;
     },
-    onRead(file) {
-      var formData = new FormData(); //构造一个 FormData，把后台需要发送的参数添加
-      formData.append("file", file.file); //接口需要传的参数
-      let _this = this;
-      var xhr = new XMLHttpRequest();
-      xhr.open(
-        "post",
-        "http://www.czssqw.net/zhzf_ly/api/Common/Uploader/annexpic"
-      );
-      xhr.send(formData);
-      xhr.onload = function () {
-        if (xhr.status === 200) {
-          let { data } = JSON.parse(xhr.response);
-          // data.url = config[process.env.NODE_ENV].mockUrl+data.url
-          data.url = "http://www.czssqw.net/zhzf_ly" + data.url;
-          _this.uploadImages.push({
-            url: data.url,
-          });
-          _this.addressInfo.ATTACHS = _this.uploadImages;
-          // _this.fileList = data
-          // _this.addressInfo.ATTACHS = data.map(item=>{
-          //   item.url = url+item.ur
-          // })
-          console.log(data, _this.uploadImages, _this.addressInfo.ATTACHS);
-        }
-      };
-      // console.log(file);
+    handleclickactive1(e) {
+      let id = e.target.id;
+      this.active1 = id
     },
-    onDelete(file, { index }) {
-      this.uploadImages.splice(index, 1);
-      console.log(this.fileList, this.uploadImages);
-      return true;
+    handleclickactive2(e) {
+      let id = e.target.id;
+      this.active2 = id
     },
-    onOversize(file) {
-      // Toast("正在上传");
-      // console.log(file);
-      // Toast("文件大小不能超过 500kb");
+    handleclickactive3(e) {
+      let id = e.target.id;
+      this.active3 = id
+    },
+    savinfo() {
+        this.addressInfo.wz = this.active1+'-'+this.active2+'-'+this.active3
+        this.showname1 = false
     },
     onSubmit(values) {
       console.log(values);
-      let { NAME, CONTENT, SER_TYPE, ATTACHS, USER_ID, ID } = this.addressInfo;
-      let params1 = { NAME, CONTENT, SER_TYPE, ATTACHS, USER_ID, ID };
-      appealSave(params1)
-        .then((res) => {
-          Dialog.alert({
-            title: "提示",
-            message: "保存成功",
-          }).then(() => {
-            this.$router.push({
-              name: "Myappeal",
-            });
-          });
-        })
-        .catch((error) => console.log(error));
+      this.show1 = true;
       return;
-      // &utype=kuhu&provinceID=110000&cityID=&areaID=&address=%E5%A4%A7V%E5%8F%91%E5%9C%B0%E5%9D%80&NAME=%E5%91%B5%E5%91%B5%E5%91%B5&phone=13611366910
-      let params = {
-        uid: this.userInfo.id,
-        token: this.userInfo.token,
-        provinceID: this.area1[0],
-        cityID: this.area1[1],
-        areaID: this.area1[2],
-        address: this.addressInfo.address,
-        NAME: this.addressInfo.NAME,
-        phone: this.addressInfo.phone,
-        utype: "kuhu",
-      };
-      let paramsstr = "";
-      for (const key in params) {
-        if (Object.hasOwnProperty.call(params, key)) {
-          paramsstr += `&${key}=${params[key]}`;
-        }
-      }
-      console.log("submit", values);
-
-      axios
-        .get(
-          `http://cj.pydoton.com/?s=App.Shop_ShoppingAddress.Save${paramsstr}`
-        )
-        .then((res) => {
-          // axios({
-          //   method: "post",
-          //   url: "http://cj.pydoton.com/?s=App.Shop_ShoppingAddress.Save",
-          //   data: params,
-          //   withCredentials: true,
-          // })
-          //   .then((res) => {
-          let { msg } = res.data;
-          if (msg == "保存成功!") {
-            this.$router.push({
-              name: "Myappeal",
-              query: { ...this.$route.query },
-            });
-          }
-          console.log(msg);
-        })
-        .catch((error) => console.log(error));
-    },
-    seeOrder() {
-      this.$router.push({
-        name: "Confirmorder",
-      });
-    },
+      
+    }
   },
 };
 </script>
@@ -342,6 +251,8 @@ export default {
 }
 ::v-deep .van-field__control {
   text-align: right;
+  color: #666666;
+  font-size: 90%;
 }
 .hhhhh {
   ::v-deep .van-field__control {
@@ -351,5 +262,61 @@ export default {
 .selet {
   display: flex;
   justify-content: space-between;
+  > div {
+    width: calc(100% / 3);
+    margin:10px;
+     box-sizing: border-box;
+  }
+  p {
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    // border:solid 1px red;
+    text-align: center;
+    box-sizing: border-box;
+    font-size: 16px;
+  }
+  .texts {
+    p {
+      margin-bottom:15px;
+      box-sizing: border-box;
+      background: #F5F5F5;
+    }
+    .active {
+      background: rgba(45, 146, 250, 0.2);
+      position: relative;
+      &::after {
+        content: "";
+        width: 5px;
+        height: 20px;
+        background: #2D92FA;
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        margin:auto;
+      }
+    }
+  }
+}
+::v-deep .van-dialog__content {
+  text-align: center;
+}
+.rukuimg {
+  margin: 0 auto;
+}
+.rukup {
+  margin:20px auto;
+  text-align: center;
+  font-family: PingFang SC;
+font-weight: 500;
+color: #000000;
+font-size: 16px;
+}
+.qren {
+  width: 90%;
+  margin:0 auto;
+  margin-bottom: 20px;
+  box-sizing: border-box;
 }
 </style>

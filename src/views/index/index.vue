@@ -23,13 +23,13 @@
     </div>
     <div class="main-box">
       <div class="flex2">
-        <div class="flex-1">
+        <div class="flex-1" @click="gotoWantdetails">
           <p class="p1">样本入库</p>
           <p class="p2"></p>
           <p class="p3">Sample warehousing</p>
           <img src="../../assets/qihuadun/入库.png" alt="" srcset="">
         </div>
-        <div class="flex-2">
+        <div class="flex-2" @click="gotocheckout">
           <p class="p1">样本出库</p>
           <p class="p2"></p>
           <p class="p3">Sample delivery</p>
@@ -37,8 +37,8 @@
         </div>
 
       </div>
-      <div class="flex3">
-        <p class="p1">样本出库</p>
+      <div class="flex3" @click="scrapprocess">
+        <p class="p1">报废流程</p>
         <p class="p2"></p>
         <p class="p3">Sample delivery</p>
         <p class="p2" style="visibility: hidden;"></p>
@@ -123,9 +123,24 @@ export default {
     loginout() {
        this.$store.dispatch('user/logout')
         this.$router.push({
-            name: "Login",
+            name: "LoginPhone",
         });
     },
+    gotoWantdetails() {
+      this.$router.push({
+        name:'Wantdetailsscan'
+      })
+    },
+    gotocheckout() {
+      this.$router.push({
+        name:'Checkoutscan'
+      })
+    },
+    scrapprocess() {
+      this.$router.push({
+        name:'Scrapprocess'
+      })
+    }
   },
 };
 </script>
