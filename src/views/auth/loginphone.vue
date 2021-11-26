@@ -90,8 +90,8 @@ export default {
       form: {
         // mobile: '18862631752',
         // code:'123456'
-        mobile: '',
-        code:''
+        mobile: 'admin',
+        code:'111111'
       },
       // 验证码
       safety: {

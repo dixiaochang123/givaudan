@@ -53,7 +53,7 @@ export function ResetPassword(data) {
 //登录
 export function Login1(data) {
   return request({
-    url: `/wjyql/mobile/doLogin`,
+    url: `/qc_web/mobile/doLogin`,
     method: 'post',
     data
   })

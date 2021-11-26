@@ -32,7 +32,7 @@
            <p :class="[active1=='FCFG04'?'active':'']" id="FCFG04">FCFG04</p>
          </div>
        </div>
-       <div>
+       <div v-if="!!active1">
          <p>选择托盘</p>
          <div class="texts" @click="handleclickactive2">
            <p :class="[active2=='A01托盘'?'active':'']" id="A01托盘">A01托盘</p>
@@ -42,7 +42,7 @@
          </div>
 
        </div>
-       <div>
+       <div v-if="!!active2">
          <p>选择编号</p>
          <div class="texts" @click="handleclickactive3">
            <p :class="[active3=='#1-55#'?'active':'']" id="#1-55#">#1-55#</p>
@@ -158,7 +158,15 @@ export default {
       this.active3 = id
     },
     savinfo() {
+      if(!!this.active3) {
+
         this.addressInfo.wz = this.active1+'-'+this.active2+'-'+this.active3
+      } else {
+        this.active1 = "";
+        this.active2 = "";
+        this.active3 = "";
+        this.addressInfo.wz = "";
+      }
         this.showname1 = false
     },
     onSubmit(values) {
@@ -264,6 +272,7 @@ export default {
   justify-content: space-between;
   > div {
     width: calc(100% / 3);
+    width: 100%;
     margin:10px;
      box-sizing: border-box;
   }

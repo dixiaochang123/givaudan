@@ -8,7 +8,7 @@ module.exports = {
     mockUrl: 'http://localhost:3210'
   },
   'development': {
-    baseUrl: '/wjyql',
+    baseUrl: '/qc_web',
     mockUrl: 'http://182.92.2.167:8200',
   },
   'production': {

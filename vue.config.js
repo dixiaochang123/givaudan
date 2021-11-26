@@ -42,10 +42,10 @@ module.exports = {
       //   secure: false,
       //   changeOrigin: true
       // },
-      '/wjyql': {
+      '/qc_web': {
         target: mockUrl,
         pathRewrite: {
-          '^/wjyql': '/'
+          '^/qc_web': '/'
         },
         secure: false,
         changeOrigin: true

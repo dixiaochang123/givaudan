@@ -7,15 +7,15 @@
       </div>
       <div class="header-info">
         <div>
-          <span class="number">142</span>
+          <span class="number">{{list[0].num}}</span>
           <span>现有库存</span>
         </div>
         <div>
-          <span class="number">142</span>
+          <span class="number">{{list[1].num}}</span>
           <span>已出库</span>
         </div>
         <div>
-          <span class="number">142</span>
+          <span class="number">{{list[2].num}}</span>
           <span>已报废</span>
         </div>
       </div>
@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { getUserInfo } from "@/api/personal";
+import { getHomeList } from "@/api/personal";
 import { mapGetters, mapActions } from "vuex";
 const config = require("../../utils/config");
 export default {
@@ -62,61 +62,28 @@ export default {
   components: {},
   data() {
     return {
-      isLogin: false,
-      refreshing: false,
-      loading: false,
-      photo:
-        config[process.env.NODE_ENV].mockUrl +
-        "/wjyql/uploadFile/downloadFile?attachId=",
-      url:
-        config[process.env.NODE_ENV].mockUrl +
-        "/wjyql/uploadFile/downloadFile?attachId=",
-      indexData: {},
+      list:[]
     };
   },
   computed: {
     ...mapGetters(["userInfo"]),
   },
-  watch: {
-    $route: {
-      handler(route) {
-        console.log("route:", this.userInfo);
-        this.getUserInfo();
-      },
-      immediate: true,
-      deep: true,
-    },
-    // 'userInfo': {
-    //   handler(newName) {
-    //     this.getUserInfo()
-    //   },
-    //   immediate: true,
-    //   deep: true
-    // }
-  },
   created() {
-    this.getUserInfo();
-  },
+    },
   mounted() {
-    this.photo =
-      config[process.env.NODE_ENV].mockUrl +
-        "/wjyql/uploadFile/downloadFile?attachId=" +
-        this.userInfo.PHOTO || 12067;
+    
+    this.getHomeList();
   },
   methods: {
     ...mapActions(["setuserinfo"]),
-    getUserInfo() {
-      getUserInfo({
-        USER_ID: this.userInfo.ID,
-      })
+    getHomeList() {
+      getHomeList()
         .then((res) => {
-          let { code, data } = res;
-          this.$store.dispatch("user/setuserinfo", data.userMap);
-          this.photo =
-            config[process.env.NODE_ENV].mockUrl +
-              "/wjyql/uploadFile/downloadFile?attachId=" +
-              this.userInfo.PHOTO || 12067;
-          // this.setuserinfo(data.userMap)
+        let {code,data} = res
+          console.log(code,data)
+          if(code==0) {
+            this.list = data.list
+          }
         })
         .catch((error) => console.log(error));
     },
