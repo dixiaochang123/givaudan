@@ -22,3 +22,44 @@ $ npm run dev
 ```
 
 
+
+```
+givaudan
+│  ├─ main.js
+│  ├─ permission.js
+│  ├─ router
+│  │  ├─ blacklist.js
+│  │  └─ index.js
+│  ├─ store
+│  │  ├─ getters.js
+│  │  ├─ index.js
+│  │  └─ modules
+│  │     ├─ order.js
+│  │     ├─ search.js
+│  │     └─ user.js
+│  ├─ styles
+│  │  ├─ index.scss
+│  │  ├─ reset.scss
+│  │  └─ variables.scss
+│  ├─ utils
+│  │  ├─ area.js
+│  │  ├─ auth.js
+│  │  ├─ browser.js
+│  │  ├─ config.js
+│  │  ├─ request.js
+│  │  └─ request1.js
+│  └─ views
+│     ├─ auth
+│     │  └─ loginphone.vue //登录
+│     ├─ index
+│     │  └─ index.vue //首页
+│     └─ personal
+│        ├─ checkout.vue   //出库
+│        ├─ checkoutscan.vue//出库扫描
+│        ├─ samplelibrary.vue //样本库
+│        ├─ scrapprocess.vue //报废流程
+│        ├─ wantdetails.vue //入库
+│        └─ wantdetailsscan.vue //入库扫描
+└─ vue.config.js
+
+```

@@ -57,6 +57,16 @@ const routes = [
       showTab: false
     }
   },
+  // 入库扫描
+  {
+    path: '/wantdetailsscan',
+    name: 'Wantdetailsscan',
+    component: () => import('@/views/personal/wantdetailsscan'),
+    meta: {
+      title: '样本入库',
+      showTab: false
+    }
+  },
   // 出库
   {
     path: '/checkout',
