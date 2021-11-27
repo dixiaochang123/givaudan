@@ -75,7 +75,7 @@ export default {
     getSampleMap() {
       getSampleMap({
         SAMPLE: this.$route.query.sample,
-        SAM_ID: 2,
+        SAM_ID: "",
       })
         .then((res) => {
           let { code, data } = res;
