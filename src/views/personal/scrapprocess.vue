@@ -44,6 +44,7 @@
       <p class="rukup">报废失败</p>
       <p class="rukup" style="visibility: hidden;">报废失败</p>
     </van-dialog>
+    <van-loading v-if="loading" size="24px" vertical>加载中...</van-loading>
   </div>
 </template>
 
@@ -62,8 +63,9 @@ export default {
   components: {},
   data() {
     return {
-      currentPage:"1",
-      TOTAL_NUM:"1",
+      loading:false,
+      currentPage:1,
+      TOTAL_NUM:1,
       active:'预警',
       checked: false,
       checkedall: false,
@@ -102,6 +104,7 @@ export default {
       this.getSampleList()
     },
     getSampleList() {
+      this.loading = true
       let state = {
         '预警':1,
         '正常':2
@@ -111,7 +114,7 @@ export default {
         STATE:'',						//状态（1：入库  2：出库  3：报废）
         ISYJ:state[this.active],							//预警值（1：预警值 2：正常）
         PAGE:this.currentPage,
-        NUM:'5'
+        NUM:5
       }).then(res=>{
          let {code,data}= res;
           if(code==0) {
@@ -121,6 +124,7 @@ export default {
             })
             this.list = data.list;
             this.TOTAL_NUM = data.TOTAL_NUM;
+            this.loading = false
           }
       }).catch(error=>console.log(error))
     },
@@ -131,6 +135,7 @@ export default {
     handleclicktabs(e) {
         let id = e.target.id;
         this.active = id
+        this.loading = true;
         this.getSampleList()
         console.log(id)
 

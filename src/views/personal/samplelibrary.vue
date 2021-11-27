@@ -20,6 +20,7 @@
     </van-form>
     <van-pagination v-model="currentPage" :total-items="TOTAL_NUM" :items-per-page="5" @change="change" />
     <div style="height:20px;"></div>
+    <van-loading v-if="loading" size="24px" vertical>加载中...</van-loading>
   </div>
 </template>
 
@@ -36,6 +37,7 @@ export default {
   components: {},
   data() {
     return {
+      loading:false,
       currentPage:1,
       active: "现有库存",
       search: "",
@@ -65,6 +67,7 @@ export default {
       this.getSampleList()
     },
     getSampleList() {
+      this.loading = true;
       let state = {
         '现有库存':1,
         '已出库':2,
@@ -75,14 +78,14 @@ export default {
         STATE:state[this.active],						//状态（1：入库  2：出库  3：报废）
         ISYJ:"",							//预警值（1：预警值 2：正常）
         PAGE:this.currentPage,
-        NUM:'3'
+        NUM:'5'
       }).then(res=>{
          let {code,data}= res;
           if(code==0) {
             console.log(data)
             this.list = data.list;
             this.TOTAL_NUM = data.TOTAL_NUM;
-
+            this.loading = false
           }
       }).catch(error=>console.log(error))
     },
