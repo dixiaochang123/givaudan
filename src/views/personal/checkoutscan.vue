@@ -20,18 +20,24 @@ export default {
   components: {},
   data() {
     return {
-      
+      time:null
     };
   },
   computed: {
     ...mapGetters(["userInfo"])
   },
   mounted() {
-      setTimeout(()=>{
+      this.time = setTimeout(()=>{
         this.$router.push({
-            name:'Checkout'
+            name:'Checkout',
+            query: {
+              sample:'801776487'
+            }
         })
       },1500)
+  },
+  destroyed () {
+    clearTimeout(this.time)
   },
   methods: {
     onClickLeft() {

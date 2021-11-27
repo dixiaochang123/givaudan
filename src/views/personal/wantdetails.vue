@@ -3,11 +3,12 @@
     <van-nav-bar title="样本入库" left-text="" left-arrow fixed @click-left="onClickLeft" />
     <div style="height: 46px"></div>
     <van-form @submit="onSubmit">
-      <van-field :left-icon="ylicon" v-model="addressInfo.yl" readonly label="原料"   />
-      <van-field :left-icon="pcicon" v-model="addressInfo.pc" readonly label="批次"  />
-      <van-field :left-icon="bzicon" v-model="addressInfo.bz" readonly label="包装"  />
-      <van-field :left-icon="zbqicon" v-model="addressInfo.zbq" readonly label="质保期"  />
-      <van-field :left-icon="lygficon" v-model="addressInfo.lyg" readonly :rules="[{ required: true, message: '请选择服留样柜' }]" label="请选择留样柜" right-icon="arrow" @click="showname = true" />
+      <van-field readonly :label="'样本：'+addressInfo.PHYSICAL_SAMPLE"></van-field>
+      <van-field :left-icon="ylicon" v-model="addressInfo.MATERIAL" readonly label="原料" />
+      <van-field :left-icon="pcicon" v-model="addressInfo.BATCH" readonly label="批次" />
+      <van-field :left-icon="bzicon" v-model="addressInfo.PLANT" readonly label="包装" />
+      <van-field :left-icon="zbqicon" v-model="addressInfo.SLED" readonly label="质保期" />
+      <van-field :left-icon="lygficon" v-model="addressInfo.SARK_" readonly :rules="[{ required: true, message: '请选择服留样柜' }]" label="请选择留样柜" right-icon="arrow" @click="showname = true" />
       <van-field :left-icon="wzicon" v-model="addressInfo.wz" readonly :rules="[{ required: true, message: '请选择具体位置' }]" label="具体位置" right-icon="arrow" @click="showname1 = true" />
       <div style="margin: 16px">
         <van-button class="see" block type="info" native-type="submit">入库</van-button>
@@ -15,55 +16,49 @@
     </van-form>
 
     <van-popup v-model="showname" position="bottom">
-      <van-picker title="" show-toolbar :columns="columns" @confirm="onConfirm1" @cancel="showname = false" @change="onChange" />
+      <van-picker :default-index="defaultIndex" title="" show-toolbar :columns="columns" @confirm="onConfirm1" @cancel="showname = false" @change="onChange" />
     </van-popup>
 
     <van-popup v-model="showname1" position="bottom">
       <p style="visibility: hidden;">具体位置</p>
       <p>具体位置</p>
       <p style="visibility: hidden;">具体位置</p>
-     <div class="selet" style="height:200px;">
-       <div>
-         <p>选择留样柜</p>
-         <div class="texts" @click="handleclickactive1">
-           <p v-for="(item) in columns" :key="item" :class="[active1==item?'active':'']">{{item}}</p>
-         </div>
-       </div>
-       <div v-if="!!active1">
-         <p>选择托盘</p>
-         <div class="texts" @click="handleclickactive2">
-           <p :class="[active2=='A01托盘'?'active':'']" id="A01托盘">A01托盘</p>
-           <p :class="[active2=='A02托盘'?'active':'']" id="A02托盘">A02托盘</p>
-           <p :class="[active2=='A03托盘'?'active':'']" id="A03托盘">A03托盘</p>
-           <p :class="[active2=='A04托盘'?'active':'']" id="A04托盘">A04托盘</p>
-         </div>
+      <div class="selet" style="height:200px;">
+        <div>
+          <p>选择留样柜</p>
+          <div class="texts" @click="handleclickactive1">
+            <p v-for="(item) in smallSarkList" :key="item.ID" :class="[active1==item.VALUE?'active':'']">{{item.VALUE}}</p>
+          </div>
+        </div>
+        <div v-if="!!active1">
+          <p>选择托盘</p>
+          <!-- trayList -->
+          <div class="texts" @click="handleclickactive2">
+            <p v-for="(item) in trayList" :key="item.ID" :class="[active2==item.VALUE?'active':'']">{{item.VALUE}}</p>
+          </div>
 
-       </div>
-       <div v-if="!!active2">
-         <p>选择编号</p>
-         <div class="texts" @click="handleclickactive3">
-           <p :class="[active3=='#1-55#'?'active':'']" id="#1-55#">#1-55#</p>
-           <p :class="[active3=='#1-56#'?'active':'']" id="#1-56#">#1-56#</p>
-           <p :class="[active3=='#1-57#'?'active':'']" id="#1-57#">#1-57#</p>
-           <p :class="[active3=='#1-58#'?'active':'']" id="#1-58#">#1-58#</p>
-         </div>
+        </div>
+        <div v-if="!!active2 && !!smallTrayList">
+          <p>选择编号</p>
+          <div class="texts" @click="handleclickactive3">
+            <p v-for="(item) in smallTrayList" :key="item.ID" :class="[active3==item.VALUE?'active':'']">{{item.VALUE}}</p>
+          </div>
 
-       </div>
-     </div>
-    <van-button class="qren" block type="info" @click="savinfo">确认</van-button>
-      <!-- <van-picker title="" show-toolbar :columns="columns" @confirm="onConfirm1" @cancel="showname = false" @change="onChange" /> -->
+        </div>
+      </div>
+      <van-button class="qren" block type="info" @click="savinfo">确认</van-button>
     </van-popup>
     <van-dialog width="320" v-model="show1" title="" show-cancel-button @confirm="confirm">
       <img class="rukuimg" style="width: 60%;" src="../../assets/qihuadun/是否.png" />
       <p class="rukup">是否入库</p>
     </van-dialog>
-    <van-dialog width="320" v-model="show2" title="">
+    <van-dialog width="320" v-model="show2" title="" @confirm="confirm2">
       <p class="rukup" style="visibility: hidden;">入库成功</p>
       <img class="rukuimg" style="width: 20%;" src="../../assets/qihuadun/成功.png" />
       <p class="rukup">入库成功</p>
       <p class="rukup" style="visibility: hidden;">入库成功</p>
     </van-dialog>
-    <van-dialog width="320" v-model="show3" title="">
+    <van-dialog width="320" v-model="show3" title="" @confirm="confirm2">
       <p class="rukup" style="visibility: hidden;">入库错误</p>
       <img class="rukuimg" style="width: 20%;" src="../../assets/qihuadun/错误.png" />
       <p class="rukup">入库失败</p>
@@ -74,38 +69,42 @@
 
 <script>
 import { mapGetters } from "vuex";
-import {getComboxFromJson,getSarkList} from "@/api/personal"
-let ylicon = require('../../assets/qihuadun/原料.png')
-let pcicon = require('../../assets/qihuadun/批次.png')
-let bzicon = require('../../assets/qihuadun/包装.png')
-let zbqicon = require('../../assets/qihuadun/质保期.png')
-let wzicon = require('../../assets/qihuadun/位置.png')
-let jlbficon = require('../../assets/qihuadun/报废.png')
-let lygficon = require('../../assets/qihuadun/留样柜.png')
+import { getComboxFromJson, getSarkList, getSampleMap,updateSample } from "@/api/personal";
+let ylicon = require("../../assets/qihuadun/原料.png");
+let pcicon = require("../../assets/qihuadun/批次.png");
+let bzicon = require("../../assets/qihuadun/包装.png");
+let zbqicon = require("../../assets/qihuadun/质保期.png");
+let wzicon = require("../../assets/qihuadun/位置.png");
+let jlbficon = require("../../assets/qihuadun/报废.png");
+let lygficon = require("../../assets/qihuadun/留样柜.png");
 export default {
   name: "Warehousing",
   components: {},
   data() {
     return {
-      active1:'',
-      active2:'',
-      active3:'',
+      defaultIndex: 0,
+      active1: "",
+      active2: "",
+      active3: "",
       showArea: false,
       showname: false,
-      columnsdata:[],
-      columns:[],
+      columnsdata: [],
+      columns: [],
+      smallSarkList: [], //1
+      trayList: [], //2
+      smallTrayList: [], //3
       showname1: false,
-      show1:false,
-      show2:false,
-      show3:false,
+      show1: false,
+      show2: false,
+      show3: false,
       addressInfo: {
-          yb:'样本：21016436',
-        yl:'zsq015azs',
-        pc:'cz00002540',
-        bz:'cz01',
-        zbq:'2022-09-28',
-        lyg:'',
-        wz:'',
+        yb: "样本：21016436",
+        yl: "zsq015azs",
+        pc: "cz00002540",
+        bz: "cz01",
+        zbq: "2022-09-28",
+        lyg: "",
+        wz: "",
       },
       ylicon,
       pcicon,
@@ -113,92 +112,176 @@ export default {
       zbqicon,
       wzicon,
       jlbficon,
-      lygficon
+      lygficon,
     };
   },
   computed: {
-    ...mapGetters(["userInfo"])
+    ...mapGetters(["userInfo"]),
   },
   mounted() {
-    this.getComboxFromJson()
+    this.getComboxFromJson();
+    this.getSampleMap();
   },
   methods: {
+    getSampleMap() {
+      getSampleMap({
+        SAMPLE: this.$route.query.sample,
+        SAM_ID: 2,
+      })
+        .then((res) => {
+          let { code, data } = res;
+          if (code == 0) {
+            this.addressInfo = data.map;
+            this.defaultIndex = this.columns.indexOf(data.map.SARK_);
+            this.addressInfo.wz =
+              data.map.SMALL_SARK +
+              "-" +
+              data.map.TRAY +
+              "-" +
+              data.map.SMALL_TRAY;
+            this.active1 = data.map.SMALL_SARK;
+            this.active2 = data.map.TRAY;
+            this.active3 = data.map.SMALL_TRAY;
+            this.getSarkList(data.map.SARK);
+            console.log(data.map);
+          }
+        })
+        .catch((error) => console.log(error));
+    },
     getComboxFromJson() {
-      getComboxFromJson().then(res=>{
-        let {code,data}= res;
-        if(code==0) {
-          console.log(data)
-          this.columns = data.list.map(item=>item.NAME);
-          this.columnsdata = data.list;
-        }
-      }).catch(error=>console.log(error))
-
+      getComboxFromJson()
+        .then((res) => {
+          let { code, data } = res;
+          if (code == 0) {
+            console.log(data);
+            this.columns = data.list.map((item) => item.NAME);
+            this.columnsdata = data.list;
+          }
+        })
+        .catch((error) => console.log(error));
     },
     onClickLeft() {
       this.$router.go(-1); //返回上一层
     },
-    onConfirm1(val,index) {
-      console.log(val)
+    onConfirm1(val, index) {
+      console.log(val);
       this.addressInfo.lyg = val;
       this.showname = false;
-      let params = this.columnsdata[index].VALUE
-      this.getSarkList(params)
-
+      let params = this.columnsdata[index].VALUE;
+      this.getSarkList(params);
+    },
+    confirm2() {
+      this.$router.push({
+        name:"Index"
+      })
     },
     getSarkList(params) {
       getSarkList({
-        SARK:params
-      }).then(res=>{
-        console.log(res)
-      }).catch(error=>console.log(error))
+        SARK: params,
+      })
+        .then((res) => {
+          console.log(res);
+          let { code, data } = res;
+          if (code == 0) {
+            let { smallSarkList, trayList, smallTrayList } = data;
+            this.smallSarkList = smallSarkList;
+            this.trayList = trayList;
+            this.smallTrayList = smallTrayList;
+            console.log(smallSarkList, 1, trayList, 1, smallTrayList);
+          }
+        })
+        .catch((error) => console.log(error));
     },
-    onChange() {
-
-    },
+    onChange() {},
     confirm() {
-        this.show2 = true;
+      this.updateSample()
+      // this.show2 = true;
     },
     handleclickactive1(e) {
       let val = e.target.innerText;
-      if(this.columns.includes(val)) {
-
-        this.active1 = val
+      let flag = this.smallSarkList.some((item) => item.VALUE == val);
+      console.log(flag);
+      if (flag == true) {
+        this.active1 = val;
       } else {
         return;
       }
     },
     handleclickactive2(e) {
-      let id = e.target.id;
-      this.active2 = id
+      let val = e.target.innerText;
+      let flag = this.trayList.some((item) => item.VALUE == val);
+      console.log(flag);
+      if (flag == true) {
+        this.active2 = val;
+      } else {
+        return;
+      }
     },
     handleclickactive3(e) {
-      let id = e.target.id;
-      this.active3 = id
+      let val = e.target.innerText;
+      let flag = this.smallTrayList.some((item) => item.VALUE == val);
+      if (flag == true) {
+        this.active3 = val;
+      } else {
+        return;
+      }
     },
     savinfo() {
-      if(!!this.active3) {
-        this.addressInfo.wz = this.active1+'-'+this.active2+'-'+this.active3
+      if (!!this.smallTrayList) {
+        if (!!this.active3) {
+          this.addressInfo.wz =
+            this.active1 + "-" + this.active2 + "-" + this.active3;
+        } else {
+          this.active1 = "";
+          this.active2 = "";
+          this.active3 = "";
+          this.addressInfo.wz = "";
+        }
       } else {
-        this.active1 = "";
-        this.active2 = "";
-        this.active3 = "";
-        this.addressInfo.wz = "";
+        if (!!this.active2) {
+          this.addressInfo.wz = this.active1 + "-" + this.active2;
+        } else {
+          this.active1 = "";
+          this.active2 = "";
+          this.active3 = "";
+          this.addressInfo.wz = "";
+        }
       }
-        this.showname1 = false
+      this.showname1 = false;
     },
     onSubmit(values) {
-      console.log(values);
       this.show1 = true;
-      return;
-      
-    }
+    },
+    updateSample() {
+      let params = {
+        SAM_ID: this.addressInfo.ID, //样本ID（入库和出库传一个，报废时可传多个，以英文“,”隔开）
+        STATE: "1", //操作（1：入库  2：出库  3：报废）
+        SARK: this.addressInfo.SARK, //接口4 （出库和报废时传空字符串）
+        SMALL_SARK: this.addressInfo.SMALL_SARK, //接口5第一个下拉框 （出库和报废时传空字符串）
+        TRAY: this.addressInfo.TRAY, //接口5第二个下拉框 （出库和报废时传空字符串）
+        SMALL_TRAY: this.addressInfo.SMALL_TRAY, //接口5第三个下拉框，如没有传空字符串 （出库和报废时传空字符串）
+        USER_ID: this.userInfo.ID, //	登录人ID
+      };
+
+      updateSample(params)
+        .then((res) => {
+          let {code,msg} = res;
+          console.log(code,msg)
+          if(code==1) {
+            this.show3 = true
+          } else {
+            this.show2 = true
+          }
+        })
+        .catch((error) => console.log(error));
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
 .shopdetails {
-  background: #F4F4F4;
+  background: #f4f4f4;
   min-height: 100vh;
   width: 100vw;
   ::v-deep .van-nav-bar .van-icon {
@@ -206,7 +289,7 @@ export default {
   }
 }
 .van-form {
-  margin:15px!important;
+  margin: 15px !important;
   box-sizing: border-box;
   border-radius: 10px;
   .van-cell__title {
@@ -217,7 +300,7 @@ export default {
   }
   ::v-deep .van-field__label {
     // width: 4.2em;
-    width: auto!important;
+    width: auto !important;
   }
   ::v-deep .van-field--error .van-field__control::placeholder {
     color: #969799 !important;
@@ -290,8 +373,8 @@ export default {
   > div {
     width: calc(100% / 3);
     width: 100%;
-    margin:10px;
-     box-sizing: border-box;
+    margin: 10px;
+    box-sizing: border-box;
   }
   p {
     width: 100%;
@@ -306,9 +389,9 @@ export default {
     height: 300px;
     overflow-y: auto;
     p {
-      margin-bottom:15px;
+      margin-bottom: 15px;
       box-sizing: border-box;
-      background: #F5F5F5;
+      background: #f5f5f5;
     }
     .active {
       background: rgba(45, 146, 250, 0.2);
@@ -317,12 +400,12 @@ export default {
         content: "";
         width: 5px;
         height: 20px;
-        background: #2D92FA;
+        background: #2d92fa;
         position: absolute;
         right: 0;
         top: 0;
         bottom: 0;
-        margin:auto;
+        margin: auto;
       }
     }
   }
@@ -334,16 +417,16 @@ export default {
   margin: 0 auto;
 }
 .rukup {
-  margin:20px auto;
+  margin: 20px auto;
   text-align: center;
   font-family: PingFang SC;
-font-weight: 500;
-color: #000000;
-font-size: 16px;
+  font-weight: 500;
+  color: #000000;
+  font-size: 16px;
 }
 .qren {
   width: 90%;
-  margin:0 auto;
+  margin: 0 auto;
   margin-bottom: 20px;
   box-sizing: border-box;
 }

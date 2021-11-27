@@ -119,53 +119,6 @@ export default {
     clearInterval(this.safety.interval);
   },
   methods: {
-    onClickLeft() {
-      Toast('返回');
-       this.$router.go(-1);//返回上一层
-    },
-    onClickRight() {
-      Toast('按钮');
-    },
-    // 获取验证码
-    GetCode() {
-      GetLoginCode(this.form.mobile).then(res=>{
-        let {code,msg} = res.data;
-        if(code!=1) {
-          Toast({
-            message: msg,
-            position: 'top',
-          });
-        } else {
-          Toast({
-            message: "发送成功",
-            position: 'top',
-          });
-          this.safety.state = true;
-                // 倒计时
-                this.safety.interval = setInterval(() => {
-                  this.safety.text = this.safety.time+" s"
-                  if (this.safety.time-- <= 0) {
-                    this.safety.time = 60;
-                    
-                    this.safety.state = false;
-                    this.safety.text = "获取验证码"
-                    clearInterval(this.safety.interval);
-                  }
-                }, 1000);
-        }
-        console.log(code,msg)
-      }).catch(error=>console.log(res))
-    },
-    // 校检手机号码
-    checkEmail(value) {
-      const reg = /^1[3456789]\d{9}$/
-      return reg.test(value)
-    },
-    // 校检密码
-    checkPassword(value) {
-      const reg = /^(?![\d]+$)(?![a-zA-Z]+$)(?![!#$%^&*]+$)[\da-zA-Z!#$%^&*]{6,20}$/
-      return reg.test(value)
-    },
     // 提交
     onSubmit() {
       this.loading = true

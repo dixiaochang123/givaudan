@@ -6,32 +6,22 @@
       <span :class="[active=='预警'?'active':'']" id="预警">预警</span>
       <span :class="[active=='正常'?'active':'']" id="正常">正常</span>
     </div>
-    <van-form>
-      <van-field readonly :label="addressInfo.yb">
+    <van-form  v-for="item in list" :key="item.ID">
+      <van-field readonly :label="'样本:'+item.DELETE_MARK">
         <template #button>
-          <van-checkbox v-model="checked"></van-checkbox>
+          <van-checkbox v-model="item.checked"></van-checkbox>
         </template>
       </van-field>
-      <van-field :left-icon="ylicon" v-model="addressInfo.yl" readonly label="原料"   />
-      <van-field :left-icon="pcicon" v-model="addressInfo.pc" readonly label="批次"  />
-      <van-field :left-icon="bzicon" v-model="addressInfo.bz" readonly label="包装"  />
-      <van-field :left-icon="zbqicon" v-model="addressInfo.zbq" readonly label="质保期"  />
-      <van-field :left-icon="wzicon" v-model="addressInfo.wz" readonly label="具体位置"  />
-      <van-field :left-icon="jlbficon" v-model="addressInfo.jlbf" readonly label="距离报废"  />
-    </van-form>
-    <van-form>
-      <van-field readonly :label="addressInfo.yb">
-        <template #button>
-          <van-checkbox v-model="checked"></van-checkbox>
-        </template>
-      </van-field>
-      <van-field :left-icon="ylicon" v-model="addressInfo.yl" readonly label="原料"   />
-      <van-field :left-icon="pcicon" v-model="addressInfo.pc" readonly label="批次"  />
-      <van-field :left-icon="bzicon" v-model="addressInfo.bz" readonly label="包装"  />
-      <van-field :left-icon="zbqicon" v-model="addressInfo.zbq" readonly label="质保期"  />
-      <van-field :left-icon="wzicon" v-model="addressInfo.wz" readonly label="具体位置"  />
-      <van-field :left-icon="jlbficon" v-model="addressInfo.jlbf" readonly label="距离报废"  />
-    </van-form>
+      <van-field :left-icon="ylicon" v-model="item.MATERIAL" readonly label="原料"   />
+      <van-field :left-icon="pcicon" v-model="item.BATCH" readonly label="批次"  />
+      <van-field :left-icon="bzicon" v-model="item.PLANT" readonly label="包装"  />
+      <van-field :left-icon="zbqicon" v-model="item.SLED" readonly label="质保期"  />
+      <van-field v-if="item.SARK" :left-icon="lygficon" v-model="item.SARK" label="留样柜"  />
+      <van-field v-if="item.SMALL_TRAY" :left-icon="wzicon" v-model="item.SMALL_SARK +'-' +item.TRAY +'-' +item.SMALL_TRAY" readonly label="具体位置"  />
+      <van-field v-if="!item.SMALL_TRAY && item.TRAY" :left-icon="wzicon" v-model="item.SMALL_SARK +'-' +item.TRAY +'-' +item.SMALL_TRAY" readonly label="具体位置"  />
+      <van-field :left-icon="jlbficon" v-model="item.DAY + '天'" readonly label="距离报废"  />
+    </van-form> 
+    <van-pagination v-model="currentPage" :total-items="TOTAL_NUM" :items-per-page="5" @change="change" />
     <div style="height:80px;"></div>
     <div class="btns">
         <van-checkbox v-model="checkedall" @change="checkedallchange">全选</van-checkbox>
@@ -42,13 +32,13 @@
       <img class="rukuimg" style="width: 60%;" src="../../assets/qihuadun/是否.png" />
       <p class="rukup">是否报废产品</p>
     </van-dialog>
-    <van-dialog width="320" v-model="show2" title="">
+    <van-dialog width="320" v-model="show2" title="" @confirm="confirm2">
       <p class="rukup" style="visibility: hidden;">入库成功</p>
       <img class="rukuimg" style="width: 20%;" src="../../assets/qihuadun/成功.png" />
       <p class="rukup">报废成功</p>
       <p class="rukup" style="visibility: hidden;">入库成功</p>
     </van-dialog>
-    <van-dialog width="320" v-model="show3" title="">
+    <van-dialog width="320" v-model="show3" title="" @confirm="confirm2">
       <p class="rukup" style="visibility: hidden;">报废失败</p>
       <img class="rukuimg" style="width: 20%;" src="../../assets/qihuadun/错误.png" />
       <p class="rukup">报废失败</p>
@@ -59,18 +49,21 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { getSampleList } from "@/api/personal";
+import { getSampleList,updateSample } from "@/api/personal";
 let ylicon = require('../../assets/qihuadun/原料.png')
 let pcicon = require('../../assets/qihuadun/批次.png')
 let bzicon = require('../../assets/qihuadun/包装.png')
 let zbqicon = require('../../assets/qihuadun/质保期.png')
 let wzicon = require('../../assets/qihuadun/位置.png')
 let jlbficon = require('../../assets/qihuadun/报废.png')
+let lygficon = require("../../assets/qihuadun/留样柜.png");
 export default {
   name: "Warehousing",
   components: {},
   data() {
     return {
+      currentPage:"1",
+      TOTAL_NUM:"1",
       active:'预警',
       checked: false,
       checkedall: false,
@@ -88,12 +81,14 @@ export default {
         wz:'fc成品留样柜SDRM01A01托盘1#72#',
         jlbf:'69小时21分'
       },
+      list:[],
       ylicon,
       pcicon,
       bzicon,
       zbqicon,
       wzicon,
       jlbficon,
+      lygficon
     };
   },
   computed: {
@@ -103,6 +98,9 @@ export default {
     this.getSampleList()
   },
   methods: {
+    change() {
+      this.getSampleList()
+    },
     getSampleList() {
       let state = {
         '预警':1,
@@ -110,13 +108,19 @@ export default {
       }
       getSampleList({
         SEARCH:'',						//搜索值
-        STATE:3,						//状态（1：入库  2：出库  3：报废）
+        STATE:'',						//状态（1：入库  2：出库  3：报废）
         ISYJ:state[this.active],							//预警值（1：预警值 2：正常）
+        PAGE:this.currentPage,
+        NUM:'5'
       }).then(res=>{
          let {code,data}= res;
           if(code==0) {
             console.log(data)
+            data.list.map(item=>{
+              item['checked'] = false;
+            })
             this.list = data.list;
+            this.TOTAL_NUM = data.TOTAL_NUM;
           }
       }).catch(error=>console.log(error))
     },
@@ -134,20 +138,54 @@ export default {
     checkedallchange(checked) {
         console.log(checked)
         if(checked==true) {
-            this.checked = true
+          this.list.map(item=>{
+            item.checked = true
+          })
         } else {
-            this.checked = false
+          this.list.map(item=>{
+            item.checked = false
+          })
         }
 
     },
     confirm() {
-        this.show2 = true;
+        // this.show2 = true;
+        this.updateSample()
+    },
+    confirm2() {
+      this.$router.push({
+        name:"Index"
+      })
     },
     onSubmit(values) {
       console.log(values);
       this.show1 = true;
       return;
       
+    },
+    updateSample() {
+      let samid = this.list.filter(item=>item.checked==true).map(item=>item.ID).toString();
+      let params = {
+        SAM_ID: samid, //样本ID（入库和出库传一个，报废时可传多个，以英文“,”隔开）
+        STATE: "3", //操作（1：入库  2：出库  3：报废）
+        SARK: "", //接口4 （出库和报废时传空字符串）
+        SMALL_SARK: "", //接口5第一个下拉框 （出库和报废时传空字符串）
+        TRAY: "", //接口5第二个下拉框 （出库和报废时传空字符串）
+        SMALL_TRAY: "", //接口5第三个下拉框，如没有传空字符串 （出库和报废时传空字符串）
+        USER_ID: this.userInfo.ID, //	登录人ID
+      };
+
+      updateSample(params)
+        .then((res) => {
+          let {code,msg} = res;
+          console.log(code,msg)
+          if(code==1) {
+            this.show3 = true
+          } else {
+            this.show2 = true
+          }
+        })
+        .catch((error) => console.log(error));
     }
   },
 };

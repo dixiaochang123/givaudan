@@ -3,11 +3,11 @@
     <van-nav-bar title="样本出库" left-text="" left-arrow fixed @click-left="onClickLeft" />
     <div style="height: 46px"></div>
     <van-form @submit="onSubmit">
-       <van-field readonly :label="addressInfo.yb"></van-field>
-      <van-field :left-icon="ylicon" v-model="addressInfo.yl" readonly label="原料"   />
-      <van-field :left-icon="pcicon" v-model="addressInfo.pc" readonly label="批次"  />
-      <van-field :left-icon="bzicon" v-model="addressInfo.bz" readonly label="包装"  />
-      <van-field :left-icon="zbqicon" v-model="addressInfo.zbq" readonly label="质保期"  />
+       <van-field readonly :label="'样本：'+addressInfo.PHYSICAL_SAMPLE"></van-field>
+      <van-field :left-icon="ylicon" v-model="addressInfo.MATERIAL" readonly label="原料" />
+      <van-field :left-icon="pcicon" v-model="addressInfo.BATCH" readonly label="批次" />
+      <van-field :left-icon="bzicon" v-model="addressInfo.PLANT" readonly label="包装" />
+      <van-field :left-icon="zbqicon" v-model="addressInfo.SLED" readonly label="质保期" />
       <van-field :left-icon="wzicon" v-model="addressInfo.wz" readonly label="具体位置"  />
       <div style="margin: 16px">
         <van-button class="see" block type="info" native-type="submit">确认出库</van-button>
@@ -19,13 +19,13 @@
       <p class="rukup">是否出库</p>
       <p class="rukup" style="visibility: hidden;">出库成功</p>
     </van-dialog>
-    <van-dialog class="bgc" width="320" v-model="show2" title="">
+    <van-dialog class="bgc" width="320" v-model="show2" title="" @confirm="confirm2">
       <p class="rukup" style="visibility: hidden;">出库成功</p>
       <img class="rukuimg" style="width: 20%;" src="../../assets/qihuadun/成功.png" />
       <p class="rukup">出库成功</p>
       <p class="rukup" style="visibility: hidden;">出库成功</p>
     </van-dialog>
-    <van-dialog class="bgc" width="320" v-model="show3" title="">
+    <van-dialog class="bgc" width="320" v-model="show3" title="" @confirm="confirm2">
       <p class="rukup" style="visibility: hidden;">出库错误</p>
       <img class="rukuimg" style="width: 20%;" src="../../assets/qihuadun/错误.png" />
       <p class="rukup">出库失败</p>
@@ -36,6 +36,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { getComboxFromJson, getSarkList, getSampleMap,updateSample } from "@/api/personal";
 let ylicon = require('../../assets/qihuadun/原料.png')
 let pcicon = require('../../assets/qihuadun/批次.png')
 let bzicon = require('../../assets/qihuadun/包装.png')
@@ -68,20 +69,73 @@ export default {
     ...mapGetters(["userInfo"])
   },
   mounted() {
+    this.getSampleMap()
   },
   methods: {
+    getSampleMap() {
+      getSampleMap({
+        SAMPLE: this.$route.query.sample,
+        SAM_ID: 2,
+      })
+        .then((res) => {
+          let { code, data } = res;
+          if (code == 0) {
+            this.addressInfo = data.map;
+            this.addressInfo.wz =
+              data.map.SMALL_SARK +
+              "-" +
+              data.map.TRAY +
+              "-" +
+              data.map.SMALL_TRAY;
+            // this.active1 = data.map.SMALL_SARK;
+            // this.active2 = data.map.TRAY;
+            // this.active3 = data.map.SMALL_TRAY;
+            // this.getSarkList(data.map.SARK);
+            console.log(data.map);
+          }
+        })
+        .catch((error) => console.log(error));
+    },
     onClickLeft() {
       this.$router.go(-1); //返回上一层
     },
     confirm() {
-        this.show2 = true;
+        this.updateSample()
+    },
+    confirm2() {
+      this.$router.push({
+        name:"Index"
+      })
     },
     onSubmit(values) {
       console.log(values);
       this.show1 = true;
       return;
       
-    }
+    },
+    updateSample() {
+      let params = {
+        SAM_ID: this.addressInfo.ID, //样本ID（入库和出库传一个，报废时可传多个，以英文“,”隔开）
+        STATE: "2", //操作（1：入库  2：出库  3：报废）
+        SARK: this.addressInfo.SARK, //接口4 （出库和报废时传空字符串）
+        SMALL_SARK: "", //接口5第一个下拉框 （出库和报废时传空字符串）
+        TRAY: "", //接口5第二个下拉框 （出库和报废时传空字符串）
+        SMALL_TRAY: "", //接口5第三个下拉框，如没有传空字符串 （出库和报废时传空字符串）
+        USER_ID: this.userInfo.ID, //	登录人ID
+      };
+
+      updateSample(params)
+        .then((res) => {
+          let {code,msg} = res;
+          console.log(code,msg)
+          if(code==1) {
+            this.show3 = true
+          } else {
+            this.show2 = true
+          }
+        })
+        .catch((error) => console.log(error));
+    },
   },
 };
 </script>

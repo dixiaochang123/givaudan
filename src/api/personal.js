@@ -40,3 +40,19 @@ export function getSampleList(data) {
       data
     })
   }
+  //4、	样本详情
+export function getSampleMap(data) {
+    return request({
+      url: `/qc_web/mobile/getSampleMap`,
+      method: 'post',
+      data
+    })
+  }
+  //4、	样本操作
+export function updateSample(data) {
+    return request({
+      url: `/qc_web/mobile/updateSample`,
+      method: 'post',
+      data
+    })
+  }

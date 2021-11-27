@@ -10,22 +10,15 @@
       </div>
       <van-search v-model="search" shape="round" placeholder="请输入搜索关键词" />
     </div>
-    <van-form>
-      <van-field readonly :label="addressInfo.yb"></van-field>
-      <van-field :left-icon="ylicon" v-model="addressInfo.yl" readonly label="原料"   />
-      <van-field :left-icon="pcicon" v-model="addressInfo.pc" readonly label="批次"  />
-      <van-field :left-icon="bzicon" v-model="addressInfo.bz" readonly label="包装"  />
-      <van-field :left-icon="zbqicon" v-model="addressInfo.zbq" readonly label="质保期"  />
-      <van-field :left-icon="wzicon" v-model="addressInfo.wz" readonly label="具体位置"  />
+    <van-form v-for="item in list" :key="item.ID">
+      <van-field readonly :label="'样本:'+item.DELETE_MARK"></van-field>
+      <van-field :left-icon="ylicon" v-model="item.MATERIAL" readonly label="原料"   />
+      <van-field :left-icon="pcicon" v-model="item.BATCH" readonly label="批次"  />
+      <van-field :left-icon="bzicon" v-model="item.PLANT" readonly label="包装"  />
+      <van-field :left-icon="zbqicon" v-model="item.SLED" readonly label="质保期"  />
+      <van-field :left-icon="wzicon" v-model="item.SMALL_TRAY" readonly label="具体位置"  />
     </van-form>
-    <van-form>
-       <van-field readonly :label="addressInfo.yb"></van-field>
-      <van-field :left-icon="ylicon" v-model="addressInfo.yl" readonly label="原料"   />
-      <van-field :left-icon="pcicon" v-model="addressInfo.pc" readonly label="批次"  />
-      <van-field :left-icon="bzicon" v-model="addressInfo.bz" readonly label="包装"  />
-      <van-field :left-icon="zbqicon" v-model="addressInfo.zbq" readonly label="质保期"  />
-      <van-field :left-icon="wzicon" v-model="addressInfo.wz" readonly label="具体位置"  />
-    </van-form>
+    <van-pagination v-model="currentPage" :total-items="TOTAL_NUM" :items-per-page="5" @change="change" />
     <div style="height:20px;"></div>
   </div>
 </template>
@@ -43,17 +36,11 @@ export default {
   components: {},
   data() {
     return {
+      currentPage:1,
       active: "现有库存",
       search: "",
-      addressInfo: {
-          yb:'样本：21016436',
-        yl:'zsq015azs',
-        pc:'cz00002540',
-        bz:'cz01',
-        zbq:'2022-09-28',
-        wz:'fc成品留样柜SDRM01A01托盘1#72#',
-      },
       list:[],
+      TOTAL_NUM:1,
       ylicon,
       pcicon,
       bzicon,
@@ -64,11 +51,19 @@ export default {
   computed: {
     ...mapGetters(["userInfo"]),
   },
+  watch: {
+    search(val) {
+      this.getSampleList()
+    }
+  },
   mounted() {
     this.active = this.$route.query.name
     this.getSampleList()
   },
   methods: {
+    change() {
+      this.getSampleList()
+    },
     getSampleList() {
       let state = {
         '现有库存':1,
@@ -78,12 +73,16 @@ export default {
       getSampleList({
         SEARCH:this.search,						//搜索值
         STATE:state[this.active],						//状态（1：入库  2：出库  3：报废）
-        ISYJ:2,							//预警值（1：预警值 2：正常）
+        ISYJ:"",							//预警值（1：预警值 2：正常）
+        PAGE:this.currentPage,
+        NUM:'3'
       }).then(res=>{
          let {code,data}= res;
           if(code==0) {
             console.log(data)
             this.list = data.list;
+            this.TOTAL_NUM = data.TOTAL_NUM;
+
           }
       }).catch(error=>console.log(error))
     },
