@@ -6,15 +6,15 @@
         <img src="../../assets/qihuadun/bj.png" alt="" srcset="">
       </div>
       <div class="header-info">
-        <div>
+        <div @click="gotosamplelibrary('现有库存')">
           <span class="number">{{list[0].num}}</span>
           <span>现有库存</span>
         </div>
-        <div>
+        <div @click="gotosamplelibrary('已出库')">
           <span class="number">{{list[1].num}}</span>
           <span>已出库</span>
         </div>
-        <div>
+        <div @click="gotosamplelibrary('已报废')">
           <span class="number">{{list[2].num}}</span>
           <span>已报废</span>
         </div>
@@ -86,6 +86,14 @@ export default {
           }
         })
         .catch((error) => console.log(error));
+    },
+    gotosamplelibrary(val) {
+        this.$router.push({
+            name: "Samplelibrary",
+            query:{
+              name:val
+            }
+        });
     },
     loginout() {
        this.$store.dispatch('user/logout')

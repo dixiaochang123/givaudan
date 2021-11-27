@@ -59,6 +59,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { getSampleList } from "@/api/personal";
 let ylicon = require('../../assets/qihuadun/原料.png')
 let pcicon = require('../../assets/qihuadun/批次.png')
 let bzicon = require('../../assets/qihuadun/包装.png')
@@ -99,9 +100,26 @@ export default {
     ...mapGetters(["userInfo"]),
   },
   mounted() {
-
+    this.getSampleList()
   },
   methods: {
+    getSampleList() {
+      let state = {
+        '预警':1,
+        '正常':2
+      }
+      getSampleList({
+        SEARCH:'',						//搜索值
+        STATE:3,						//状态（1：入库  2：出库  3：报废）
+        ISYJ:state[this.active],							//预警值（1：预警值 2：正常）
+      }).then(res=>{
+         let {code,data}= res;
+          if(code==0) {
+            console.log(data)
+            this.list = data.list;
+          }
+      }).catch(error=>console.log(error))
+    },
     
     onClickLeft() {
       this.$router.go(-1); //返回上一层
@@ -109,6 +127,7 @@ export default {
     handleclicktabs(e) {
         let id = e.target.id;
         this.active = id
+        this.getSampleList()
         console.log(id)
 
     },

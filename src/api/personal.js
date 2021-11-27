@@ -24,3 +24,19 @@ export function getComboxFromJson() {
       }
     })
   }
+  //4、	获取留样柜类型 三级联动
+export function getSarkList(data) {
+    return request({
+      url: `/qc_web/mobile/getSarkList`,
+      method: 'post',
+      data
+    })
+  }
+  //4、	样本列表
+export function getSampleList(data) {
+    return request({
+      url: `/qc_web/mobile/getSampleList`,
+      method: 'post',
+      data
+    })
+  }

@@ -26,10 +26,7 @@
        <div>
          <p>选择留样柜</p>
          <div class="texts" @click="handleclickactive1">
-           <p :class="[active1=='FCFG01'?'active':'']" id="FCFG01">FCFG01</p>
-           <p :class="[active1=='FCFG02'?'active':'']" id="FCFG02">FCFG02</p>
-           <p :class="[active1=='FCFG03'?'active':'']" id="FCFG03">FCFG03</p>
-           <p :class="[active1=='FCFG04'?'active':'']" id="FCFG04">FCFG04</p>
+           <p v-for="(item) in columns" :key="item" :class="[active1==item?'active':'']">{{item}}</p>
          </div>
        </div>
        <div v-if="!!active1">
@@ -77,7 +74,7 @@
 
 <script>
 import { mapGetters } from "vuex";
-import {getComboxFromJson} from "@/api/personal"
+import {getComboxFromJson,getSarkList} from "@/api/personal"
 let ylicon = require('../../assets/qihuadun/原料.png')
 let pcicon = require('../../assets/qihuadun/批次.png')
 let bzicon = require('../../assets/qihuadun/包装.png')
@@ -95,13 +92,8 @@ export default {
       active3:'',
       showArea: false,
       showname: false,
-      columns:[
-        'FCFG01',
-        'FCFG02',
-        'FCFG03',
-        'FCFG04',
-        'FCFG05',
-      ],
+      columnsdata:[],
+      columns:[],
       showname1: false,
       show1:false,
       show2:false,
@@ -112,7 +104,7 @@ export default {
         pc:'cz00002540',
         bz:'cz01',
         zbq:'2022-09-28',
-        lyg:'FCFG01',
+        lyg:'',
         wz:'',
       },
       ylicon,
@@ -136,6 +128,8 @@ export default {
         let {code,data}= res;
         if(code==0) {
           console.log(data)
+          this.columns = data.list.map(item=>item.NAME);
+          this.columnsdata = data.list;
         }
       }).catch(error=>console.log(error))
 
@@ -146,8 +140,17 @@ export default {
     onConfirm1(val,index) {
       console.log(val)
       this.addressInfo.lyg = val;
-      this.showname = false
+      this.showname = false;
+      let params = this.columnsdata[index].VALUE
+      this.getSarkList(params)
 
+    },
+    getSarkList(params) {
+      getSarkList({
+        SARK:params
+      }).then(res=>{
+        console.log(res)
+      }).catch(error=>console.log(error))
     },
     onChange() {
 
@@ -156,8 +159,13 @@ export default {
         this.show2 = true;
     },
     handleclickactive1(e) {
-      let id = e.target.id;
-      this.active1 = id
+      let val = e.target.innerText;
+      if(this.columns.includes(val)) {
+
+        this.active1 = val
+      } else {
+        return;
+      }
     },
     handleclickactive2(e) {
       let id = e.target.id;
@@ -295,6 +303,8 @@ export default {
     font-size: 16px;
   }
   .texts {
+    height: 300px;
+    overflow-y: auto;
     p {
       margin-bottom:15px;
       box-sizing: border-box;

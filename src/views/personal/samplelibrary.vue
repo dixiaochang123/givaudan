@@ -32,6 +32,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { getSampleList } from "@/api/personal";
 let ylicon = require('../../assets/qihuadun/原料.png')
 let pcicon = require('../../assets/qihuadun/批次.png')
 let bzicon = require('../../assets/qihuadun/包装.png')
@@ -52,6 +53,7 @@ export default {
         zbq:'2022-09-28',
         wz:'fc成品留样柜SDRM01A01托盘1#72#',
       },
+      list:[],
       ylicon,
       pcicon,
       bzicon,
@@ -63,8 +65,28 @@ export default {
     ...mapGetters(["userInfo"]),
   },
   mounted() {
+    this.active = this.$route.query.name
+    this.getSampleList()
   },
   methods: {
+    getSampleList() {
+      let state = {
+        '现有库存':1,
+        '已出库':2,
+        '已报废':3
+      }
+      getSampleList({
+        SEARCH:this.search,						//搜索值
+        STATE:state[this.active],						//状态（1：入库  2：出库  3：报废）
+        ISYJ:2,							//预警值（1：预警值 2：正常）
+      }).then(res=>{
+         let {code,data}= res;
+          if(code==0) {
+            console.log(data)
+            this.list = data.list;
+          }
+      }).catch(error=>console.log(error))
+    },
     onClickLeft() {
       this.$router.go(-1); //返回上一层
     },
@@ -72,6 +94,7 @@ export default {
       let id = e.target.id;
       this.active = id;
       console.log(id);
+      this.getSampleList()
     },
     checkedallchange(checked) {
       console.log(checked);
