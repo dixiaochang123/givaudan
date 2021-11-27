@@ -25,14 +25,16 @@ export default {
     ...mapGetters(["userInfo"])
   },
   mounted() {
-      this.time = setTimeout(()=>{
-        this.$router.push({
-            name:'Wantdetails',
-            query: {
-              sample:'801776487'
-            }
-        })
-      },1500)
+    window.android.startOrStopScan('1')
+    window.setScanResult = this.setScanResult
+      // this.time = setTimeout(()=>{
+      //   this.$router.push({
+      //       name:'Wantdetails',
+      //       query: {
+      //         sample:'801776487'
+      //       }
+      //   })
+      // },1500)
   },
   destroyed () {
     clearTimeout(this.time)
@@ -40,6 +42,17 @@ export default {
   methods: {
     onClickLeft() {
       this.$router.go(-1); //返回上一层
+    },
+    setScanResult(result) {
+      console.log('返回的值',result)
+         this.$router.push({
+            name:'Wantdetails',
+            query: {
+              // sample:'801776487'
+              sample:result
+            }
+        })
+      
     }
   },
 };
