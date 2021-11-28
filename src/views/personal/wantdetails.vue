@@ -77,6 +77,7 @@ let zbqicon = require("../../assets/qihuadun/质保期.png");
 let wzicon = require("../../assets/qihuadun/位置.png");
 let jlbficon = require("../../assets/qihuadun/报废.png");
 let lygficon = require("../../assets/qihuadun/留样柜.png");
+import { Dialog } from 'vant';
 export default {
   name: "Warehousing",
   components: {},
@@ -126,23 +127,41 @@ export default {
     getSampleMap() {
       getSampleMap({
         SAMPLE: this.$route.query.sample,
+        STATE:"1",
         SAM_ID: "",
       })
         .then((res) => {
           let { code, data } = res;
           if (code == 0) {
-            this.addressInfo = data.map;
-            this.defaultIndex = this.columns.indexOf(data.map.SARK_);
-            this.addressInfo.wz =
-              data.map.SMALL_SARK +
-              "-" +
-              data.map.TRAY +
-              "-" +
-              data.map.SMALL_TRAY;
-            this.active1 = data.map.SMALL_SARK;
-            this.active2 = data.map.TRAY;
-            this.active3 = data.map.SMALL_TRAY;
-            this.getSarkList(data.map.SARK);
+            if(!!data.map) {
+
+              this.addressInfo = data.map;
+              this.defaultIndex = this.columns.indexOf(data.map.SARK_);
+              if(!!data.map.SMALL_TRAY) {
+                this.addressInfo.wz = data.map.SMALL_SARK + "-" + data.map.TRAY + "-" + data.map.SMALL_TRAY;
+              } else if(!data.map.SMALL_TRAY && !!data.map.TRAY ) {
+                this.addressInfo.wz = data.map.SMALL_SARK + "-" + data.map.TRAY;
+              } else {
+                console.log(11111111)
+                this.addressInfo.wz = '';
+              }
+              this.active1 = data.map.SMALL_SARK || '';
+              this.active2 = data.map.TRAY || '';
+              this.active3 = data.map.SMALL_TRAY || '';
+              if(data.map.SARK) {
+  
+                this.getSarkList(data.map.SARK);
+              }
+            } else {
+              Dialog.alert({
+                title: '提示',
+                message: '该样本不处于当前处理状态',
+              }).then(() => {
+                this.$router.push({
+                  name:'Index'
+                })
+              });
+            }
             console.log(data.map);
           }
         })
@@ -165,7 +184,7 @@ export default {
     },
     onConfirm1(val, index) {
       console.log(val);
-      this.addressInfo.lyg = val;
+      this.addressInfo.SARK_ = val;
       this.showname = false;
       let params = this.columnsdata[index].VALUE;
       this.getSarkList(params);

@@ -37,6 +37,7 @@
 <script>
 import { mapGetters } from "vuex";
 import { getComboxFromJson, getSarkList, getSampleMap,updateSample } from "@/api/personal";
+import { Dialog } from 'vant';
 let ylicon = require('../../assets/qihuadun/原料.png')
 let pcicon = require('../../assets/qihuadun/批次.png')
 let bzicon = require('../../assets/qihuadun/包装.png')
@@ -56,7 +57,7 @@ export default {
         pc:'cz00002540',
         bz:'cz01',
         zbq:'2022-09-28',
-        wz:'fc成品留样柜SDRM01A01托盘1#72#',
+        wz:'',
       },
       ylicon,
       pcicon,
@@ -75,22 +76,33 @@ export default {
     getSampleMap() {
       getSampleMap({
         SAMPLE: this.$route.query.sample,
+        STATE:"2",
         SAM_ID: "",
       })
         .then((res) => {
           let { code, data } = res;
           if (code == 0) {
-            this.addressInfo = data.map;
-            this.addressInfo.wz =
-              data.map.SMALL_SARK +
-              "-" +
-              data.map.TRAY +
-              "-" +
-              data.map.SMALL_TRAY;
-            // this.active1 = data.map.SMALL_SARK;
-            // this.active2 = data.map.TRAY;
-            // this.active3 = data.map.SMALL_TRAY;
-            // this.getSarkList(data.map.SARK);
+            if(!!data.map) {
+
+              this.addressInfo = data.map;
+              if(!!data.map.SMALL_TRAY) {
+                  this.addressInfo.wz = data.map.SMALL_SARK + "-" + data.map.TRAY + "-" + data.map.SMALL_TRAY;
+                } else if(!data.map.SMALL_TRAY && !!data.map.TRAY ) {
+                  this.addressInfo.wz = data.map.SMALL_SARK + "-" + data.map.TRAY;
+                } else {
+                  console.log(11111111)
+                  this.addressInfo.wz = '';
+                }
+            } else {
+              Dialog.alert({
+                title: '提示',
+                message: '该样本不处于当前处理状态',
+              }).then(() => {
+                this.$router.push({
+                  name:'Index'
+                })
+              });
+            }
             console.log(data.map);
           }
         })
@@ -117,7 +129,7 @@ export default {
       let params = {
         SAM_ID: this.addressInfo.ID, //样本ID（入库和出库传一个，报废时可传多个，以英文“,”隔开）
         STATE: "2", //操作（1：入库  2：出库  3：报废）
-        SARK: this.addressInfo.SARK, //接口4 （出库和报废时传空字符串）
+        SARK: "", //接口4 （出库和报废时传空字符串）
         SMALL_SARK: "", //接口5第一个下拉框 （出库和报废时传空字符串）
         TRAY: "", //接口5第二个下拉框 （出库和报废时传空字符串）
         SMALL_TRAY: "", //接口5第三个下拉框，如没有传空字符串 （出库和报废时传空字符串）
