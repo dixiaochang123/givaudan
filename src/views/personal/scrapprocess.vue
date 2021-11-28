@@ -7,7 +7,7 @@
       <span :class="[active=='正常'?'active':'']" id="正常">正常</span>
     </div>
     <van-form  v-for="item in list" :key="item.ID">
-      <van-field readonly :label="'样本:'+item.DELETE_MARK">
+      <van-field readonly :label="'样本:'+item.PHYSICAL_SAMPLE">
         <template #button>
           <van-checkbox v-model="item.checked"></van-checkbox>
         </template>
@@ -16,9 +16,8 @@
       <van-field :left-icon="pcicon" v-model="item.BATCH" readonly label="批次"  />
       <van-field :left-icon="bzicon" v-model="item.PLANT" readonly label="包装"  />
       <van-field :left-icon="zbqicon" v-model="item.SLED" readonly label="质保期"  />
-      <van-field v-if="item.SARK" :left-icon="lygficon" v-model="item.SARK" label="留样柜"  />
-      <van-field v-if="item.SMALL_TRAY" :left-icon="wzicon" v-model="item.SMALL_SARK +'-' +item.TRAY +'-' +item.SMALL_TRAY" readonly label="具体位置"  />
-      <van-field v-if="!item.SMALL_TRAY && item.TRAY" :left-icon="wzicon" v-model="item.SMALL_SARK +'-' +item.TRAY +'-' +item.SMALL_TRAY" readonly label="具体位置"  />
+      <van-field v-if="item.SARK" :left-icon="lygficon" v-model="item.SARK" readonly label="留样柜"  />
+      <van-field v-if="item.SARK" :left-icon="wzicon" v-model="item.wz" readonly label="具体位置"  />
       <van-field :left-icon="jlbficon" v-model="item.DAY + '天'" readonly label="距离报废"  />
     </van-form> 
     <van-pagination v-model="currentPage" :total-items="TOTAL_NUM" :items-per-page="5" @change="change" />
@@ -30,7 +29,7 @@
 
     <van-dialog width="320" v-model="show1" title="" show-cancel-button @confirm="confirm">
       <img class="rukuimg" style="width: 60%;" src="../../assets/qihuadun/是否.png" />
-      <p class="rukup">是否报废产品</p>
+      <p class="rukup">是否报废样本</p>
     </van-dialog>
     <van-dialog width="320" v-model="show2" title="" @confirm="confirm2">
       <p class="rukup" style="visibility: hidden;">入库成功</p>
@@ -121,6 +120,14 @@ export default {
             console.log(data)
             data.list.map(item=>{
               item['checked'] = false;
+              if(!!item.SMALL_TRAY) {
+                  item.wz = item.SMALL_SARK + "-" + item.TRAY + "-" + item.SMALL_TRAY;
+                } else if(!item.SMALL_TRAY && !!item.TRAY ) {
+                  item.wz = item.SMALL_SARK + "-" + item.TRAY;
+                } else {
+                  console.log(11111111)
+                  item.wz = '';
+                }
             })
             this.list = data.list;
             this.TOTAL_NUM = data.TOTAL_NUM;

@@ -11,12 +11,12 @@
       <van-search v-model="search" shape="round" placeholder="请输入搜索关键词" />
     </div>
     <van-form v-for="item in list" :key="item.ID">
-      <van-field readonly :label="'样本:'+item.DELETE_MARK"></van-field>
+      <van-field readonly :label="'样本:'+item.PHYSICAL_SAMPLE"></van-field>
       <van-field :left-icon="ylicon" v-model="item.MATERIAL" readonly label="原料"   />
       <van-field :left-icon="pcicon" v-model="item.BATCH" readonly label="批次"  />
       <van-field :left-icon="bzicon" v-model="item.PLANT" readonly label="包装"  />
       <van-field :left-icon="zbqicon" v-model="item.SLED" readonly label="质保期"  />
-      <van-field :left-icon="wzicon" v-model="item.SMALL_TRAY" readonly label="具体位置"  />
+      <van-field :left-icon="wzicon" v-model="item.wz" readonly label="具体位置"  />
     </van-form>
     <van-pagination v-model="currentPage" :total-items="TOTAL_NUM" :items-per-page="5" @change="change" />
     <div style="height:20px;"></div>
@@ -83,6 +83,16 @@ export default {
          let {code,data}= res;
           if(code==0) {
             console.log(data)
+            data.list.map(item=>{
+               if(!!item.SMALL_TRAY) {
+                  item.wz = item.SMALL_SARK + "-" + item.TRAY + "-" + item.SMALL_TRAY;
+                } else if(!item.SMALL_TRAY && !!item.TRAY ) {
+                  item.wz = item.SMALL_SARK + "-" + item.TRAY;
+                } else {
+                  console.log(11111111)
+                  item.wz = '';
+                }
+            })
             this.list = data.list;
             this.TOTAL_NUM = data.TOTAL_NUM;
             this.loading = false

@@ -65,6 +65,15 @@ export default {
       list:[]
     };
   },
+  watch:{
+    '$route': {
+      handler(route) {
+        this.getHomeList()
+      },
+      immediate: true,
+      deep: true
+    }
+  },
   computed: {
     ...mapGetters(["userInfo"]),
   },
