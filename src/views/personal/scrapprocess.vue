@@ -43,7 +43,7 @@
       <p class="rukup">报废失败</p>
       <p class="rukup" style="visibility: hidden;">报废失败</p>
     </van-dialog>
-    <van-loading v-if="loading" size="24px" vertical>加载中...</van-loading>
+    <van-loading class="loading" v-if="loading" size="24px" color="#0094ff" vertical>加载中...</van-loading>
   </div>
 </template>
 
@@ -369,5 +369,12 @@ export default {
     background: linear-gradient(-90deg, #4585f5, #5aacff);
     color: #ffffff;
   }
+}
+.loading {
+  position: fixed;
+  top: 40%;
+  left: 0;
+  right: 0;
+  margin: auto;
 }
 </style>

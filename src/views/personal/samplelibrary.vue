@@ -20,7 +20,7 @@
     </van-form>
     <van-pagination v-model="currentPage" :total-items="TOTAL_NUM" :items-per-page="5" @change="change" />
     <div style="height:20px;"></div>
-    <van-loading v-if="loading" size="24px" vertical>加载中...</van-loading>
+    <van-loading class="loading" v-if="loading" size="24px" color="#0094ff" vertical>加载中...</van-loading>
   </div>
 </template>
 
@@ -290,5 +290,12 @@ export default {
     background: linear-gradient(-90deg, #4585f5, #5aacff);
     color: #ffffff;
   }
+}
+.loading {
+  position: fixed;
+  top: 40%;
+  left: 0;
+  right: 0;
+  margin: auto;
 }
 </style>
