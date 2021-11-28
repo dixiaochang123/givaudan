@@ -7,15 +7,15 @@
       </div>
       <div class="header-info">
         <div @click="gotosamplelibrary('现有库存')">
-          <span class="number">{{list[0].num}}</span>
+          <span class="number">{{list[1].num}}</span>
           <span>现有库存</span>
         </div>
         <div @click="gotosamplelibrary('已出库')">
-          <span class="number">{{list[1].num}}</span>
+          <span class="number">{{list[2].num}}</span>
           <span>已出库</span>
         </div>
         <div @click="gotosamplelibrary('已报废')">
-          <span class="number">{{list[2].num}}</span>
+          <span class="number">{{list[3].num}}</span>
           <span>已报废</span>
         </div>
       </div>

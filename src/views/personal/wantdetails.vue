@@ -187,6 +187,7 @@ export default {
       this.addressInfo.SARK_ = val;
       this.showname = false;
       let params = this.columnsdata[index].VALUE;
+      this.addressInfo.SARK = params;
       this.getSarkList(params);
     },
     confirm2() {
@@ -276,9 +277,9 @@ export default {
         SAM_ID: this.addressInfo.ID, //样本ID（入库和出库传一个，报废时可传多个，以英文“,”隔开）
         STATE: "1", //操作（1：入库  2：出库  3：报废）
         SARK: this.addressInfo.SARK, //接口4 （出库和报废时传空字符串）
-        SMALL_SARK: this.addressInfo.SMALL_SARK, //接口5第一个下拉框 （出库和报废时传空字符串）
-        TRAY: this.addressInfo.TRAY, //接口5第二个下拉框 （出库和报废时传空字符串）
-        SMALL_TRAY: this.addressInfo.SMALL_TRAY, //接口5第三个下拉框，如没有传空字符串 （出库和报废时传空字符串）
+        SMALL_SARK:  this.active1, //接口5第一个下拉框 （出库和报废时传空字符串）
+        TRAY:  this.active2, //接口5第二个下拉框 （出库和报废时传空字符串）
+        SMALL_TRAY:  this.active3, //接口5第三个下拉框，如没有传空字符串 （出库和报废时传空字符串）
         USER_ID: this.userInfo.ID, //	登录人ID
       };
 
