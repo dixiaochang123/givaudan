@@ -4,9 +4,9 @@
     <div style="height:56px;background-color:#F4F4F4"></div>
     <div class="box">
         <img class="images" width="60%" src="../../assets/qihuadun/扫码.png" alt="" srcset="">
-        <p>请将您扫码枪靠近商品</p>
-        <p>请确保15cm内</p>
-        <p>按下扫码枪上的按钮后开始扫码</p>
+        <p>请将您扫码枪对准样本瓶上的条形码</p>
+        <!-- <p>请确保15cm内</p>
+        <p>按下扫码枪上的按钮后开始扫码</p> -->
     </div>
     
   </div>
