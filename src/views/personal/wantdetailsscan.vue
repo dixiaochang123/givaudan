@@ -58,9 +58,9 @@ export default {
     onConfirm1(val, index) {
       console.log(val);
       this.addressInfo.SARK_ = val;
-      this.showname = false;
       let params = this.columnsdata[index].VALUE;
       this.addressInfo.SARK = params;
+      this.showname = false;
       window.android.startOrStopScan('1')
       window.setScanResult = this.setScanResult
     },
@@ -74,6 +74,7 @@ export default {
             query: {
               // sample:'801776487'
               sark:this.addressInfo.SARK,
+              sark_:this.addressInfo.sark_,
               sample:result
             }
         })
