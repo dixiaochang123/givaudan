@@ -62,6 +62,16 @@ export default {
       let params = this.columnsdata[index].VALUE;
       this.addressInfo.SARK = params;
 
+      this.$router.push({
+            name:'Wantdetails',
+            query: {
+              // sample:'801776487'
+              sark:this.addressInfo.SARK,
+              sark_:this.addressInfo.SARK_,
+              sample:'801876087'
+            }
+        })
+
       window.android.startOrStopScan('1')
       window.setScanResult = this.setScanResult
     },
@@ -74,6 +84,7 @@ export default {
             name:'Wantdetails',
             query: {
               // sample:'801776487'
+              sark:this.addressInfo.SARK,
               sample:result
             }
         })

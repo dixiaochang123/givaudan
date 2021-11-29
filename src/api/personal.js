@@ -24,10 +24,26 @@ export function getComboxFromJson() {
       }
     })
   }
-  //4、	获取留样柜类型 三级联动
+  //4、	获取留样柜类型 三级联动 1级
 export function getSarkList(data) {
     return request({
       url: `/qc_web/mobile/getSarkList`,
+      method: 'post',
+      data
+    })
+  }
+  //4、	获取留样柜类型 三级联动 2级
+export function getTrayList(data) {
+    return request({
+      url: `/qc_web/mobile/getTrayList`,
+      method: 'post',
+      data
+    })
+  }
+  //4、	获取留样柜类型 三级联动 3级
+export function getSmallTrayList(data) {
+    return request({
+      url: `/qc_web/mobile/getSmallTrayList`,
       method: 'post',
       data
     })

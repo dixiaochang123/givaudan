@@ -8,6 +8,7 @@
       <van-field :left-icon="pcicon" v-model="addressInfo.BATCH" readonly label="批次" />
       <van-field :left-icon="bzicon" v-model="addressInfo.PLANT" readonly label="包装" />
       <van-field :left-icon="zbqicon" v-model="addressInfo.SLED" readonly label="质保期" />
+      <van-field :left-icon="lygficon" v-model="addressInfo.SARK_" readonly label="留样柜" />
       <van-field :left-icon="wzicon" v-model="addressInfo.wz" readonly label="具体位置"  />
       <div style="margin: 16px">
         <van-button class="see" block type="info" native-type="submit">确认出库</van-button>
@@ -43,6 +44,7 @@ let pcicon = require('../../assets/qihuadun/批次.png')
 let bzicon = require('../../assets/qihuadun/包装.png')
 let zbqicon = require('../../assets/qihuadun/质保期.png')
 let wzicon = require('../../assets/qihuadun/位置.png')
+let lygficon = require("../../assets/qihuadun/留样柜.png");
 export default {
   name: "Warehousing",
   components: {},
@@ -63,7 +65,8 @@ export default {
       pcicon,
       bzicon,
       zbqicon,
-      wzicon
+      wzicon,
+      lygficon
     };
   },
   computed: {

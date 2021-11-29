@@ -16,7 +16,8 @@
       <van-field :left-icon="pcicon" v-model="item.BATCH" readonly label="批次"  />
       <van-field :left-icon="bzicon" v-model="item.PLANT" readonly label="包装"  />
       <van-field :left-icon="zbqicon" v-model="item.SLED" readonly label="质保期"  />
-      <van-field :left-icon="wzicon" v-model="item.wz" readonly label="具体位置"  />
+      <van-field v-if="item.SARK" :left-icon="lygficon" v-model="item.SARK_" readonly label="留样柜" />
+      <van-field v-if="item.SARK" :left-icon="wzicon" v-model="item.wz" readonly label="具体位置"  />
     </van-form>
     <van-pagination v-model="currentPage" :total-items="TOTAL_NUM" :items-per-page="5" @change="change" />
     <div style="height:20px;"></div>
@@ -32,6 +33,7 @@ let pcicon = require('../../assets/qihuadun/批次.png')
 let bzicon = require('../../assets/qihuadun/包装.png')
 let zbqicon = require('../../assets/qihuadun/质保期.png')
 let wzicon = require('../../assets/qihuadun/位置.png')
+let lygficon = require("../../assets/qihuadun/留样柜.png");
 export default {
   name: "Warehousing",
   components: {},
@@ -47,7 +49,8 @@ export default {
       pcicon,
       bzicon,
       zbqicon,
-      wzicon
+      wzicon,
+      lygficon
     };
   },
   computed: {

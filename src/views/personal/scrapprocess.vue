@@ -16,7 +16,7 @@
       <van-field :left-icon="pcicon" v-model="item.BATCH" readonly label="批次"  />
       <van-field :left-icon="bzicon" v-model="item.PLANT" readonly label="包装"  />
       <van-field :left-icon="zbqicon" v-model="item.SLED" readonly label="质保期"  />
-      <van-field v-if="item.SARK" :left-icon="lygficon" v-model="item.SARK" readonly label="留样柜"  />
+      <van-field v-if="item.SARK" :left-icon="lygficon" v-model="item.SARK_" readonly label="留样柜"  />
       <van-field v-if="item.SARK" :left-icon="wzicon" v-model="item.wz" readonly label="具体位置"  />
       <van-field :left-icon="jlbficon" v-model="item.DAY + '天'" readonly label="距离报废"  />
     </van-form> 

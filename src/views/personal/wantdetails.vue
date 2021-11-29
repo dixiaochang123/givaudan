@@ -8,15 +8,15 @@
       <van-field :left-icon="pcicon" v-model="addressInfo.BATCH" readonly label="批次" />
       <van-field :left-icon="bzicon" v-model="addressInfo.PLANT" readonly label="包装" />
       <van-field :left-icon="zbqicon" v-model="addressInfo.SLED" readonly label="质保期" />
-      <van-field :left-icon="lygficon" v-model="addressInfo.SARK_" readonly :rules="[{ required: true, message: '请选择服留样柜' }]" label="请选择留样柜" right-icon="arrow" @click="showname = true" />
-      <van-field :left-icon="wzicon" v-model="addressInfo.wz" readonly :rules="[{ required: true, message: '请选择具体位置' }]" label="具体位置" right-icon="arrow" @click="showname1 = true" />
+      <van-field :left-icon="lygficon" v-model="addressInfo.SARK_" readonly label="留样柜" />
+      <van-field :left-icon="wzicon" v-model="wz" readonly :rules="[{ required: true, message: '请选择具体位置' }]" label="具体位置" right-icon="arrow" @click="showname1 = true" />
       <div style="margin: 16px">
         <van-button class="see" block type="info" native-type="submit">入库</van-button>
       </div>
     </van-form>
 
     <van-popup v-model="showname" position="bottom">
-      <van-picker :default-index="defaultIndex" title="" show-toolbar :columns="columns" @confirm="onConfirm1" @cancel="showname = false" @change="onChange" />
+      <van-picker title="" show-toolbar :columns="columns" @confirm="onConfirm1" @cancel="showname = false" @change="onChange" />
     </van-popup>
 
     <van-popup v-model="showname1" position="bottom">
@@ -38,7 +38,7 @@
           </div>
 
         </div>
-        <div v-if="!!active2 && !!smallTrayList">
+        <div v-if="!!active2 && !!active3">
           <p>选择编号</p>
           <div class="texts" @click="handleclickactive3">
             <p v-for="(item) in smallTrayList" :key="item.ID" :class="[active3==item.VALUE?'active':'']">{{item.VALUE}}</p>
@@ -69,7 +69,14 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { getComboxFromJson, getSarkList, getSampleMap,updateSample } from "@/api/personal";
+import {
+  getComboxFromJson,
+  getSarkList,
+  getTrayList,
+  getSmallTrayList,
+  getSampleMap,
+  updateSample,
+} from "@/api/personal";
 let ylicon = require("../../assets/qihuadun/原料.png");
 let pcicon = require("../../assets/qihuadun/批次.png");
 let bzicon = require("../../assets/qihuadun/包装.png");
@@ -77,13 +84,12 @@ let zbqicon = require("../../assets/qihuadun/质保期.png");
 let wzicon = require("../../assets/qihuadun/位置.png");
 let jlbficon = require("../../assets/qihuadun/报废.png");
 let lygficon = require("../../assets/qihuadun/留样柜.png");
-import { Dialog } from 'vant';
+import { Dialog } from "vant";
 export default {
   name: "Warehousing",
   components: {},
   data() {
     return {
-      defaultIndex: 0,
       active1: "",
       active2: "",
       active3: "",
@@ -107,6 +113,7 @@ export default {
         lyg: "",
         wz: "",
       },
+      wz: "",
       ylicon,
       pcicon,
       bzicon,
@@ -122,44 +129,48 @@ export default {
   mounted() {
     this.getComboxFromJson();
     this.getSampleMap();
+    setTimeout(()=>{
+      if (!!this.active3) {
+          this.wz = this.active1 + "-" + this.active2 + "-" + this.active3;
+        } else if(!!this.active2 && !this.active3) {
+           this.wz = this.active1 + "-" + this.active2;
+        } else {
+          this.active1 = "";
+          this.active2 = "";
+          this.active3 = "";
+          this.wz = "";
+        }
+
+    },1000)
   },
   methods: {
     getSampleMap() {
       getSampleMap({
         SAMPLE: this.$route.query.sample,
-        STATE:"1",
+        STATE: "1",
         SAM_ID: "",
       })
         .then((res) => {
           let { code, data } = res;
           if (code == 0) {
-            if(!!data.map) {
-
+            if (!!data.map) {
               this.addressInfo = data.map;
-              this.defaultIndex = this.columns.indexOf(data.map.SARK_);
-              if(!!data.map.SMALL_TRAY) {
-                this.addressInfo.wz = data.map.SMALL_SARK + "-" + data.map.TRAY + "-" + data.map.SMALL_TRAY;
-              } else if(!data.map.SMALL_TRAY && !!data.map.TRAY ) {
-                this.addressInfo.wz = data.map.SMALL_SARK + "-" + data.map.TRAY;
-              } else {
-                console.log(11111111)
-                this.addressInfo.wz = '';
-              }
-              this.active1 = data.map.SMALL_SARK || '';
-              this.active2 = data.map.TRAY || '';
-              this.active3 = data.map.SMALL_TRAY || '';
-              if(data.map.SARK) {
-  
-                this.getSarkList(data.map.SARK);
+              // this.defaultIndex = this.columns.indexOf(data.map.SARK_);
+              this.active1 = data.map.SMALL_SARK || "";
+              this.active2 = data.map.TRAY || "";
+              this.active3 = data.map.SMALL_TRAY || "";
+              if (this.$route.query.sark) {
+                this.getSarkList(this.$route.query.sark);
+                this.addressInfo.SARK_ = this.$route.query.sark_;
               }
             } else {
               Dialog.alert({
-                title: '提示',
-                message: '该样本不处于当前处理状态',
+                title: "提示",
+                message: "该样本不处于当前处理状态",
               }).then(() => {
                 this.$router.push({
-                  name:'Index'
-                })
+                  name: "Index",
+                });
               });
             }
             console.log(data.map);
@@ -192,8 +203,8 @@ export default {
     },
     confirm2() {
       this.$router.push({
-        name:"Index"
-      })
+        name: "Index",
+      });
     },
     getSarkList(params) {
       getSarkList({
@@ -203,18 +214,57 @@ export default {
           console.log(res);
           let { code, data } = res;
           if (code == 0) {
-            let { smallSarkList, trayList, smallTrayList } = data;
+            let { smallSarkList } = data;
             this.smallSarkList = smallSarkList;
+            this.active1 = smallSarkList[0].VALUE;
+            this.getTrayList(smallSarkList[0].VALUE);
+            // this.trayList = trayList;
+            // this.smallTrayList = smallTrayList;
+            console.log(smallSarkList);
+          }
+        })
+        .catch((error) => console.log(error));
+    },
+    getTrayList(params) {
+      getTrayList({
+        SARK: this.$route.query.sark,
+        SMALL_SARK: params,
+      })
+        .then((res) => {
+          console.log(res);
+          let { code, data } = res;
+          if (code == 0) {
+            let { trayList } = data;
             this.trayList = trayList;
-            this.smallTrayList = smallTrayList;
-            console.log(smallSarkList, 1, trayList, 1, smallTrayList);
+            this.active2 = trayList[0].VALUE;
+            this.getSmallTrayList();
+            console.log(trayList);
+          }
+        })
+        .catch((error) => console.log(error));
+    },
+    getSmallTrayList() {
+      getSmallTrayList({
+        SARK: this.$route.query.sark,
+        SMALL_SARK: this.active1,
+        TRAY: this.active2,
+      })
+        .then((res) => {
+          let { code, data } = res;
+          console.log(code, data);
+          if (!!data.trayList) {
+            let { trayList } = data;
+            this.smallTrayList = trayList;
+            this.active3 = trayList[0].VALUE;
+          } else {
+            this.active3 =""
           }
         })
         .catch((error) => console.log(error));
     },
     onChange() {},
     confirm() {
-      this.updateSample()
+      this.updateSample();
       // this.show2 = true;
     },
     handleclickactive1(e) {
@@ -223,6 +273,7 @@ export default {
       console.log(flag);
       if (flag == true) {
         this.active1 = val;
+        this.getTrayList(val);
       } else {
         return;
       }
@@ -233,6 +284,7 @@ export default {
       console.log(flag);
       if (flag == true) {
         this.active2 = val;
+        this.getSmallTrayList();
       } else {
         return;
       }
@@ -247,26 +299,16 @@ export default {
       }
     },
     savinfo() {
-      if (!!this.smallTrayList) {
-        if (!!this.active3) {
-          this.addressInfo.wz =
-            this.active1 + "-" + this.active2 + "-" + this.active3;
+       if (!!this.active3) {
+          this.wz = this.active1 + "-" + this.active2 + "-" + this.active3;
+        } else if(!!this.active2 && !this.active3) {
+           this.wz = this.active1 + "-" + this.active2;
         } else {
           this.active1 = "";
           this.active2 = "";
           this.active3 = "";
-          this.addressInfo.wz = "";
+          this.wz = "";
         }
-      } else {
-        if (!!this.active2) {
-          this.addressInfo.wz = this.active1 + "-" + this.active2;
-        } else {
-          this.active1 = "";
-          this.active2 = "";
-          this.active3 = "";
-          this.addressInfo.wz = "";
-        }
-      }
       this.showname1 = false;
     },
     onSubmit(values) {
@@ -276,21 +318,21 @@ export default {
       let params = {
         SAM_ID: this.addressInfo.ID, //样本ID（入库和出库传一个，报废时可传多个，以英文“,”隔开）
         STATE: "1", //操作（1：入库  2：出库  3：报废）
-        SARK: this.addressInfo.SARK, //接口4 （出库和报废时传空字符串）
-        SMALL_SARK:  this.active1, //接口5第一个下拉框 （出库和报废时传空字符串）
-        TRAY:  this.active2, //接口5第二个下拉框 （出库和报废时传空字符串）
-        SMALL_TRAY:  this.active3, //接口5第三个下拉框，如没有传空字符串 （出库和报废时传空字符串）
+        SARK: this.$route.query.sark, //接口4 （出库和报废时传空字符串）
+        SMALL_SARK: this.active1, //接口5第一个下拉框 （出库和报废时传空字符串）
+        TRAY: this.active2, //接口5第二个下拉框 （出库和报废时传空字符串）
+        SMALL_TRAY: this.active3, //接口5第三个下拉框，如没有传空字符串 （出库和报废时传空字符串）
         USER_ID: this.userInfo.ID, //	登录人ID
       };
 
       updateSample(params)
         .then((res) => {
-          let {code,msg} = res;
-          console.log(code,msg)
-          if(code==1) {
-            this.show3 = true
+          let { code, msg } = res;
+          console.log(code, msg);
+          if (code == 1) {
+            this.show3 = true;
           } else {
-            this.show2 = true
+            this.show2 = true;
           }
         })
         .catch((error) => console.log(error));
