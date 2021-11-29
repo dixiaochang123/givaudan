@@ -74,7 +74,7 @@ export default {
             query: {
               // sample:'801776487'
               sark:this.addressInfo.SARK,
-              sark_:this.addressInfo.sark_,
+              sark_:this.addressInfo.SARK_,
               sample:result
             }
         })
