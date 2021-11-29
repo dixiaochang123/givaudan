@@ -64,6 +64,7 @@
       <p class="rukup">入库失败</p>
       <p class="rukup" style="visibility: hidden;">入库错误</p>
     </van-dialog>
+    <van-loading class="loading" v-if="loading" size="24px" color="#0094ff" vertical>加载中...</van-loading>
   </div>
 </template>
 
@@ -90,6 +91,7 @@ export default {
   components: {},
   data() {
     return {
+      loading:false,
       active1: "",
       active2: "",
       active3: "",
@@ -121,16 +123,16 @@ export default {
       wzicon,
       jlbficon,
       lygficon,
+      active1success:false
     };
   },
   computed: {
     ...mapGetters(["userInfo"]),
   },
-  mounted() {
-    this.getComboxFromJson();
-    this.getSampleMap();
-    setTimeout(()=>{
-      if (!!this.active3) {
+  watch:{
+    active1success(val) {
+      if(!!val) {
+        if (!!this.active3) {
           this.wz = this.active1 + "-" + this.active2 + "-" + this.active3;
         } else if(!!this.active2 && !this.active3) {
            this.wz = this.active1 + "-" + this.active2;
@@ -140,8 +142,26 @@ export default {
           this.active3 = "";
           this.wz = "";
         }
+      }
+    }
+  },
+  mounted() {
+    this.getComboxFromJson();
+    this.getSampleMap();
+    // setTimeout(()=>{
+    //   if (!!this.active3) {
+    //       this.wz = this.active1 + "-" + this.active2 + "-" + this.active3;
+    //     } else if(!!this.active2 && !this.active3) {
+    //        this.wz = this.active1 + "-" + this.active2;
+    //     } else {
+    //       this.active1 = "";
+    //       this.active2 = "";
+    //       this.active3 = "";
+    //       this.wz = "";
+    //     }
+    //     this.loading = false;
 
-    },1000)
+    // },2000)
   },
   methods: {
     getSampleMap() {
@@ -217,6 +237,7 @@ export default {
             let { smallSarkList } = data;
             this.smallSarkList = smallSarkList;
             this.active1 = smallSarkList[0].VALUE;
+            console.log(this.active1)
             this.getTrayList(smallSarkList[0].VALUE);
             // this.trayList = trayList;
             // this.smallTrayList = smallTrayList;
@@ -251,6 +272,7 @@ export default {
       })
         .then((res) => {
           let { code, data } = res;
+          
           console.log(code, data);
           if (!!data.trayList) {
             let { trayList } = data;
@@ -259,6 +281,7 @@ export default {
           } else {
             this.active3 =""
           }
+          this.active1success = true
         })
         .catch((error) => console.log(error));
     },
@@ -491,5 +514,12 @@ export default {
   margin: 0 auto;
   margin-bottom: 20px;
   box-sizing: border-box;
+}
+.loading {
+  position: fixed;
+  top: 40%;
+  left: 0;
+  right: 0;
+  margin: auto;
 }
 </style>
