@@ -29,20 +29,28 @@
           <p class="p3">Sample warehousing</p>
           <img src="../../assets/qihuadun/入库.png" alt="" srcset="">
         </div>
-        <div class="flex-2" @click="gotocheckout">
+        <div class="flex-2 flex-3" @click="gotoreturn">
+          <p class="p1">样本归还</p>
+          <p class="p2"></p>
+          <p class="p3">Sample return</p>
+          <img src="../../assets/qihuadun/归还.png" alt="" srcset="">
+        </div>
+
+      </div>
+      <div class="flex2">
+        <div class="flex-1 flex-5" @click="gotocheckout">
           <p class="p1">样本出库</p>
           <p class="p2"></p>
           <p class="p3">Sample delivery</p>
           <img src="../../assets/qihuadun/出库.png" alt="" srcset="">
         </div>
+        <div class="flex-2 flex-4" @click="scrapprocess">
+          <p class="p1">报废流程</p>
+          <p class="p2"></p>
+          <p class="p3">Sample delivery</p>
+          <img src="../../assets/qihuadun/报废流程.png" alt="" srcset="">
+        </div>
 
-      </div>
-      <div class="flex3" @click="scrapprocess">
-        <p class="p1">报废流程</p>
-        <p class="p2"></p>
-        <p class="p3">Sample delivery</p>
-        <p class="p2" style="visibility: hidden;"></p>
-        <img src="../../assets/qihuadun/报废流程.png" alt="" srcset="">
       </div>
     </div>
     <div class="btn" style="margin: 15px">
@@ -118,6 +126,11 @@ export default {
     gotocheckout() {
       this.$router.push({
         name:'Checkoutscan'
+      })
+    },
+    gotoreturn() {
+      this.$router.push({
+        name:'Returnscan'
       })
     },
     scrapprocess() {
@@ -210,6 +223,7 @@ export default {
   .flex2 {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 30px;
     > div {
       width: 50%;
       height: 335px;
@@ -228,6 +242,29 @@ export default {
       background: url("../../assets/qihuadun/组 3.png") no-repeat center;
       background-size: cover;
       margin-left: 15px;
+    }
+    .flex-3 {
+      background: url("../../assets/qihuadun/组 50.png") no-repeat center;
+      background-size: cover;
+      margin-left: 15px;
+      img {
+        width: 45px;
+        height: 45px;
+      }
+    }
+    .flex-4 {
+      background: url("../../assets/qihuadun/组 40.png") no-repeat center;
+      background-size: cover;
+      margin-left: 15px;
+      img {
+        width: 45px;
+        height: 45px;
+      }
+    }
+    .flex-5 {
+      background: url("../../assets/qihuadun/组 3.png") no-repeat center;
+      background-size: cover;
+      // margin-left: 15px;
     }
   }
   .flex3 {

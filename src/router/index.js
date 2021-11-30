@@ -87,6 +87,26 @@ const routes = [
       showTab: false
     }
   },
+  // 归还
+  {
+    path: '/return',
+    name: 'Return',
+    component: () => import('@/views/personal/return'),
+    meta: {
+      title: '样本归还',
+      showTab: false
+    }
+  },
+  // 归还扫描
+  {
+    path: '/returnscan',
+    name: 'Returnscan',
+    component: () => import('@/views/personal/returnscan'),
+    meta: {
+      title: '样本归还',
+      showTab: false
+    }
+  },
   // 报废流程
   {
     path: '/scrapprocess',

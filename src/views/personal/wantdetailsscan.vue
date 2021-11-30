@@ -1,6 +1,6 @@
 <template>
   <div class="shopdetails">
-    <van-nav-bar title="样本入库" left-text="" left-arrow fixed @click-left="onClickLeft" />
+    <van-nav-bar title="选择留样柜" left-text="" left-arrow fixed @click-left="onClickLeft" />
     <div style="height:56px;background-color:#F4F4F4"></div>
     <div class="box">
       <van-field input-align="right" :left-icon="lygficon" v-model="addressInfo.SARK_" readonly :rules="[{ required: true, message: '请选择服留样柜' }]" label="请选择留样柜" right-icon="arrow" @click="showname = true" />

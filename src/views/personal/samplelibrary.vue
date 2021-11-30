@@ -16,8 +16,8 @@
       <van-field :left-icon="pcicon" v-model="item.BATCH" readonly label="批次"  />
       <van-field :left-icon="bzicon" v-model="item.PLANT" readonly label="包装"  />
       <van-field :left-icon="zbqicon" v-model="item.SLED" readonly label="质保期"  />
-      <van-field v-if="item.SARK" :left-icon="lygficon" v-model="item.SARK_" readonly label="留样柜" />
-      <van-field v-if="item.SARK" :left-icon="wzicon" v-model="item.wz" readonly label="具体位置"  />
+      <van-field v-if="item.STATE==1" :left-icon="lygficon" v-model="item.SARK_" readonly label="留样柜" />
+      <van-field v-if="item.STATE==1" :left-icon="wzicon" v-model="item.wz" readonly label="具体位置"  />
     </van-form>
     <van-pagination v-model="currentPage" :total-items="TOTAL_NUM" :items-per-page="5" @change="change" />
     <div style="height:20px;"></div>
@@ -86,17 +86,22 @@ export default {
          let {code,data}= res;
           if(code==0) {
             console.log(data)
-            data.list.map(item=>{
-               if(!!item.SMALL_TRAY) {
-                  item.wz = item.SMALL_SARK + "-" + item.TRAY + "-" + item.SMALL_TRAY;
-                } else if(!item.SMALL_TRAY && !!item.TRAY ) {
-                  item.wz = item.SMALL_SARK + "-" + item.TRAY;
-                } else {
-                  console.log(11111111)
-                  item.wz = '';
-                }
-            })
-            this.list = data.list;
+            if(data.list) {
+
+              data.list.map(item=>{
+                 if(!!item.SMALL_TRAY) {
+                    item.wz = item.SMALL_SARK + "-" + item.TRAY + "-" + item.SMALL_TRAY;
+                  } else if(!item.SMALL_TRAY && !!item.TRAY ) {
+                    item.wz = item.SMALL_SARK + "-" + item.TRAY;
+                  } else {
+                    console.log(11111111)
+                    item.wz = '';
+                  }
+              })
+              this.list = data.list;
+            } else {
+              this.list = []
+            }
             this.TOTAL_NUM = data.TOTAL_NUM;
             this.loading = false
           }
