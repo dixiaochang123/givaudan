@@ -27,13 +27,6 @@ export default {
     ...mapGetters(["userInfo"])
   },
   mounted() {
-    this.$router.push({
-            name:'Return',
-            query: {
-              // sample:result,
-              sample:'6958752202828'
-            }
-        })
     window.android.startOrStopScan('1')
     window.setScanResult = this.setScanResult
       // this.time = setTimeout(()=>{
@@ -57,8 +50,7 @@ export default {
          this.$router.push({
             name:'Return',
             query: {
-              sample:result,
-              sample:'6958752202828'
+              sample:result
             }
         })
       
