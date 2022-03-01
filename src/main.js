@@ -4,9 +4,9 @@ import Vue from 'vue'
 // https://github.com/necolas/normalize.css
 import 'normalize.css/normalize.css'
 import './styles/index.scss'
-import { ActionSheet,Popup,Step, Steps,Area,DatetimePicker,Picker,Uploader,Pagination } from 'vant';
+import { ActionSheet,Popup,Step, Steps,Area,DatetimePicker,Picker,Uploader,Pagination,Dialog  } from 'vant';
 
-Vue.use(Uploader).use(Picker).use(DatetimePicker).use(Area).use(Step).use(Steps).use(ActionSheet).use(Popup).use(Pagination);
+Vue.use(Uploader).use(Picker).use(DatetimePicker).use(Area).use(Step).use(Steps).use(ActionSheet).use(Popup).use(Pagination).use(Dialog);;
 
 import 'swiper/dist/css/swiper.min.css'
 import 'swiper/dist/js/swiper.min'

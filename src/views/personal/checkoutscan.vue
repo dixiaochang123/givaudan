@@ -14,19 +14,23 @@
 
 <script>
 import { mapGetters } from "vuex";
-
+import { getSampleSate,saveSample,getSampleMap } from "@/api/personal";
+import { Dialog } from 'vant';
 export default {
   name: "Warehousing",
   components: {},
   data() {
     return {
-      time:null
+      time:null,
+      SAM_ID:''
     };
   },
   computed: {
     ...mapGetters(["userInfo"])
   },
   mounted() {
+    
+    
     window.android.startOrStopScan('1')
     window.setScanResult = this.setScanResult
       // this.time = setTimeout(()=>{
@@ -45,8 +49,88 @@ export default {
     onClickLeft() {
       this.$router.go(-1); //返回上一层
     },
+    getSampleMap(SAMPLE) {
+      getSampleMap({
+        SAMPLE:SAMPLE,		//						  扫秒条形码返回的信息
+        STATE:"",										//	  (1:入库  2:出库)
+        SAM_ID:"",	//
+
+      }).then(res=>{
+        let {code,data} = res;
+        if(code==0) {
+            this.SAM_ID = data.map.ID
+            this.getSampleSate()
+        }
+
+      }).catch((error=>conosle.log(error)))
+    },
+    getSampleSate() {
+
+      getSampleSate({
+          //  LIB_ID:this.$route.query.id,
+          //  SAM_ID:result
+           LIB_ID:this.$route.query.id,
+           SAM_ID:this.SAM_ID
+  
+        }).then(res=>{
+          let {code,msg} = res;
+          console.log(code)
+          if(code==0) {
+            Dialog.confirm({
+              title: '提示',
+              message: msg,
+            })
+            .then(() => {
+              saveSample({
+                  LIB_ID:this.$route.query.id,	//出库单ID
+                  SAM_ID:this.SAM_ID,	//样本ID
+                  USER_ID:this.userInfo.ID,//用户ID
+                  STATE:0	//状态：0 待出库  1 出库   2删除
+  
+              }).then(res=>{
+                  let {code,data}= res;
+                  if(code==0) {
+                      this.$router.push({
+                        name:"Checkoutlist"
+                      })
+                  }
+              }).catch(error=>console.log(error))
+                
+            })
+            .catch(() => {
+                // on cancel
+            });
+  
+          }
+          if(code==1) {
+            Dialog.alert({
+              message: msg,
+              confirmButtonText:"取消"
+            }).then(() => {
+              saveSample({
+                  LIB_ID:this.$route.query.id,	//出库单ID
+                  SAM_ID:this.SAM_ID,	//样本ID
+                  USER_ID:this.userInfo.ID,//用户ID
+                  STATE:1	//状态：0 待出库  1 出库   2删除
+  
+              }).then(res=>{
+                  let {code,data}= res;
+                  if(code==0) {
+                      this.$router.push({
+                        name:"Checkoutlist"
+                      })
+                  }
+              }).catch(error=>console.log(error))
+            });
+  
+          }
+  
+        }).catch(error=>console.log(error))
+    },
     setScanResult(result) {
-      console.log('返回的值',result)
+      console.log('扫码返回的值',result)
+      this.getSampleMap(result)
+      return;
          this.$router.push({
             name:'Checkout',
             query: {

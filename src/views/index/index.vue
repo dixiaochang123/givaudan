@@ -29,20 +29,33 @@
           <p class="p3">Sample warehousing</p>
           <img src="../../assets/qihuadun/入库.png" alt="" srcset="">
         </div>
-        <div class="flex-2 flex-3" @click="gotoreturn">
+        <!-- <div class="flex-2 flex-3" @click="gotoreturn">
           <p class="p1">样本归还</p>
           <p class="p2"></p>
           <p class="p3">Sample return</p>
           <img src="../../assets/qihuadun/归还.png" alt="" srcset="">
-        </div>
+        </div> -->
 
-      </div>
-      <div class="flex2">
-        <div class="flex-1 flex-5" @click="gotocheckout">
+        <div class="flex-2 flex-3" @click="gotocheckout">
           <p class="p1">样本出库</p>
           <p class="p2"></p>
           <p class="p3">Sample delivery</p>
           <img src="../../assets/qihuadun/出库.png" alt="" srcset="">
+        </div>
+
+      </div>
+      <div class="flex2">
+        <!-- <div class="flex-1 flex-5" @click="gotocheckout">
+          <p class="p1">样本出库</p>
+          <p class="p2"></p>
+          <p class="p3">Sample delivery</p>
+          <img src="../../assets/qihuadun/出库.png" alt="" srcset="">
+        </div> -->
+        <div class="flex-1 flex-5" @click="gotoreturn">
+          <p class="p1">样本归还</p>
+          <p class="p2"></p>
+          <p class="p3">Sample return</p>
+          <img src="../../assets/qihuadun/归还.png" alt="" srcset="">
         </div>
         <div class="flex-2 flex-4" @click="scrapprocess">
           <p class="p1">报废流程</p>
@@ -62,7 +75,7 @@
 </template>
 
 <script>
-import { getHomeList } from "@/api/personal";
+import { getHomeList,createOutLib } from "@/api/personal";
 import { mapGetters, mapActions } from "vuex";
 const config = require("../../utils/config");
 export default {
@@ -124,9 +137,20 @@ export default {
       })
     },
     gotocheckout() {
-      this.$router.push({
-        name:'Checkoutscan'
-      })
+      createOutLib({
+        USER_ID:this.userInfo.ID
+      }).then(res=>{
+        let {data} = res
+        console.log(data)
+        this.$router.push({
+          name:'Checkoutlist',
+          query:{
+            id:data
+          }
+        })
+
+      }).catch(error=>console.log(error))
+      return
     },
     gotoreturn() {
       this.$router.push({

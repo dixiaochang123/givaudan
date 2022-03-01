@@ -77,6 +77,16 @@ const routes = [
       showTab: false
     }
   },
+  // 出库列表
+  {
+    path: '/checkoutlist',
+    name: 'Checkoutlist',
+    component: () => import('@/views/personal/checkoutlist'),
+    meta: {
+      title: '出库列表',
+      showTab: false
+    }
+  },
   // 出库扫描
   {
     path: '/checkoutscan',

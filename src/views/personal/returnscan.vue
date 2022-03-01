@@ -27,7 +27,7 @@ export default {
     ...mapGetters(["userInfo"])
   },
   mounted() {
-    window.android.startOrStopScan('1')
+    window.android.startOrStopScan('4')
     window.setScanResult = this.setScanResult
       // this.time = setTimeout(()=>{
       //   this.$router.push({

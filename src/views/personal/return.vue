@@ -3,11 +3,16 @@
     <van-nav-bar title="样本归还" left-text="" left-arrow fixed @click-left="onClickLeft" />
     <div style="height: 46px"></div>
     <van-form @submit="onSubmit">
-      <van-field readonly :label="'样本：'+addressInfo.PHYSICAL_SAMPLE"></van-field>
-      <van-field :left-icon="ylicon" v-model="addressInfo.MATERIAL" readonly label="原料" />
-      <van-field :left-icon="pcicon" v-model="addressInfo.BATCH" readonly label="批次" />
-      <van-field :left-icon="bzicon" v-model="addressInfo.PLANT" readonly label="包装" />
-      <van-field :left-icon="zbqicon" v-model="addressInfo.SLED" readonly label="质保期" />
+      <!-- 样本：PHYSICAL_SAMPLE
+      原料：MATERIAL
+      批次：BATCH
+      包装：PLANT
+      质保期：SLED -->
+      <van-field readonly :label="'PHYSICAL_SAMPLE：'+addressInfo.PHYSICAL_SAMPLE"></van-field>
+      <van-field :left-icon="ylicon" v-model="addressInfo.MATERIAL" readonly label="MATERIAL" />
+      <van-field :left-icon="pcicon" v-model="addressInfo.BATCH" readonly label="BATCH" />
+      <van-field :left-icon="bzicon" v-model="addressInfo.PLANT" readonly label="PLANT" />
+      <van-field :left-icon="zbqicon" v-model="addressInfo.SLED" readonly label="SLED" />
       <van-field :left-icon="lygficon" v-model="addressInfo.SARK_" readonly label="留样柜" />
       <van-field :left-icon="wzicon" v-model="addressInfo.wz" readonly  label="具体位置" />
       <div style="margin: 16px">
@@ -263,7 +268,7 @@ export default {
     updateSample() {
       let params = {
         SAM_ID: this.addressInfo.ID, //样本ID（入库和出库传一个，报废时可传多个，以英文“,”隔开）
-        STATE: "1", //操作（1：入库  2：出库  3：报废）
+        STATE: "4", //操作（1：入库  2：出库  3：报废）
         SARK: "", //接口4 （出库和报废时传空字符串）
         SMALL_SARK: "", //接口5第一个下拉框 （出库和报废时传空字符串）
         TRAY: "", //接口5第二个下拉框 （出库和报废时传空字符串）

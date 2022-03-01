@@ -8,14 +8,31 @@
         <span :class="[active=='已出库'?'active':'']" id="已出库">已出库</span>
         <span :class="[active=='已报废'?'active':'']" id="已报废">已报废</span>
       </div>
-      <van-search v-model="search" shape="round" placeholder="请输入搜索关键词" />
+      <van-search v-model="search" shape="round" placeholder="请输入搜索关键词">
+          <template #right-icon>
+            <!-- <div>搜索</div> -->
+            <van-icon @click="scanning" name="scan" />
+          </template>
+      </van-search>
     </div>
     <van-form v-for="item in list" :key="item.ID">
-      <van-field readonly :label="'样本:'+item.PHYSICAL_SAMPLE"></van-field>
+      <!-- <van-field readonly :label="'样本:'+item.PHYSICAL_SAMPLE"></van-field>
       <van-field :left-icon="ylicon" v-model="item.MATERIAL" readonly label="原料"   />
       <van-field :left-icon="pcicon" v-model="item.BATCH" readonly label="批次"  />
       <van-field :left-icon="bzicon" v-model="item.PLANT" readonly label="包装"  />
       <van-field :left-icon="zbqicon" v-model="item.SLED" readonly label="质保期"  />
+      <van-field v-if="item.STATE==1" :left-icon="lygficon" v-model="item.SARK_" readonly label="留样柜" />
+      <van-field v-if="item.STATE==1" :left-icon="wzicon" v-model="item.wz" readonly label="具体位置"  /> -->
+      <!-- 样本：PHYSICAL_SAMPLE
+      原料：MATERIAL
+      批次：BATCH
+      包装：PLANT
+      质保期：SLED -->
+      <van-field readonly :label="'PHYSICAL_SAMPLE:'+item.PHYSICAL_SAMPLE"></van-field>
+      <van-field :left-icon="ylicon" v-model="item.MATERIAL" readonly label="MATERIAL"   />
+      <van-field :left-icon="pcicon" v-model="item.BATCH" readonly label="BATCH"  />
+      <van-field :left-icon="bzicon" v-model="item.PLANT" readonly label="PLANT"  />
+      <van-field :left-icon="zbqicon" v-model="item.SLED" readonly label="SLED"  />
       <van-field v-if="item.STATE==1" :left-icon="lygficon" v-model="item.SARK_" readonly label="留样柜" />
       <van-field v-if="item.STATE==1" :left-icon="wzicon" v-model="item.wz" readonly label="具体位置"  />
     </van-form>
@@ -66,6 +83,9 @@ export default {
     this.getSampleList()
   },
   methods: {
+    scanning() {
+
+    },
     change() {
       this.getSampleList()
     },

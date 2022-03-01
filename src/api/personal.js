@@ -72,3 +72,36 @@ export function updateSample(data) {
       data
     })
   }
+  // 10、	创建出库单     
+  export function createOutLib(data) {
+    return request({
+      url: `/qc_web/mobile/createOutLib`,
+      method: 'post',
+      data
+    })
+  }
+  // 11、	根据出库单获取明细     
+export function getSampleListByOut(data) {
+  return request({
+    url: `/qc_web/mobile/getSampleListByOut`,
+    method: 'post',
+    data
+  })
+}
+// 12、	根据出库单和样本获取当前状态 
+export function getSampleSate(data) {
+  return request({
+    url: `/qc_web/mobile/getSampleState`,
+    method: 'post',
+    data
+  })
+}
+
+// 13、	保存出库操作 
+export function saveSample(data) {
+  return request({
+    url: `/qc_web/mobile/saveSample`,
+    method: 'post',
+    data
+  })
+}

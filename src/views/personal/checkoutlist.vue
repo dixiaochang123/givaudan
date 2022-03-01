@@ -1,11 +1,11 @@
 <template>
   <div class="shopdetails">
-    <van-nav-bar title="报废流程" left-text="" left-arrow fixed @click-left="onClickLeft" />
+    <van-nav-bar title="出库列表" left-text="" left-arrow fixed @click-left="onClickLeft" />
     <div style="height: 46px"></div>
-    <div class="tabs" @click="handleclicktabs">
+    <!-- <div class="tabs" @click="handleclicktabs">
       <span :class="[active=='预警'?'active':'']" id="预警">预警</span>
       <span :class="[active=='正常'?'active':'']" id="正常">正常</span>
-    </div>
+    </div> -->
     <!-- 样本：PHYSICAL_SAMPLE
       原料：MATERIAL
       批次：BATCH
@@ -14,22 +14,23 @@
     <van-form  v-for="item in list" :key="item.ID">
       <van-field readonly :label="'PHYSICAL_SAMPLE:'+item.PHYSICAL_SAMPLE">
         <template #button>
-          <van-checkbox v-model="item.checked"></van-checkbox>
+          <!-- <van-checkbox v-model="item.checked"></van-checkbox> -->
+          <van-icon name="cross" @click="deleted(item)" />
         </template>
       </van-field>
       <van-field :left-icon="ylicon" v-model="item.MATERIAL" readonly label="MATERIAL"   />
       <van-field :left-icon="pcicon" v-model="item.BATCH" readonly label="BATCH"  />
       <van-field :left-icon="bzicon" v-model="item.PLANT" readonly label="PLANT"  />
-      <van-field :left-icon="zbqicon" v-model="item.SLED" readonly label="SLED"  />
+      <!-- <van-field :left-icon="zbqicon" v-model="item.SLED" readonly label="SLED"  /> -->
       <van-field v-if="item.SARK" :left-icon="lygficon" v-model="item.SARK_" readonly label="留样柜"  />
       <van-field v-if="item.SARK" :left-icon="wzicon" v-model="item.wz" readonly label="具体位置"  />
-      <van-field :left-icon="jlbficon" v-model="item.DAY + '天'" readonly label="距离报废"  />
+      <!-- <van-field :left-icon="jlbficon" v-model="item.DAY + '天'" readonly label="距离报废"  /> -->
     </van-form> 
-    <van-pagination v-model="currentPage" :total-items="TOTAL_NUM" :items-per-page="5" @change="change" />
+    <van-pagination v-if="list.length!==0" v-model="currentPage" :total-items="TOTAL_NUM" :items-per-page="5" @change="change" />
     <div style="height:80px;"></div>
     <div class="btns">
-        <van-checkbox v-model="checkedall" @change="checkedallchange">全选</van-checkbox>
-        <van-button class="see" block type="info" @click="onSubmit">确认报废</van-button>
+        <!-- <van-checkbox v-model="checkedall" @change="checkedallchange">全选</van-checkbox> -->
+        <van-button class="see" block type="info" @click="onSubmit">扫 码</van-button>
       </div>
 
     <van-dialog width="320" v-model="show1" title="" show-cancel-button @confirm="confirm">
@@ -53,8 +54,10 @@
 </template>
 
 <script>
+import { Dialog } from 'vant';
 import { mapGetters } from "vuex";
-import { getSampleList,updateSample } from "@/api/personal";
+import { Notify } from 'vant';
+import { updateSample,getSampleListByOut,saveSample } from "@/api/personal";
 let ylicon = require('../../assets/qihuadun/原料.png')
 let pcicon = require('../../assets/qihuadun/批次.png')
 let bzicon = require('../../assets/qihuadun/包装.png')
@@ -101,30 +104,47 @@ export default {
     ...mapGetters(["userInfo"]),
   },
   mounted() {
-    this.getSampleList()
+    this.getSampleListByOut()
   },
   methods: {
-    change() {
-      this.getSampleList()
+    deleted(item) {
+        console.log(item)
+        Dialog.confirm({
+        title: '提示',
+        message: '确认删除？',
+        })
+        .then(() => {
+            // on confirm
+            saveSample({
+                LIB_ID:item.LIB_ID,	//出库单ID
+                SAM_ID:item.SAM_ID,	//样本ID
+                USER_ID:item.USER_ID,//用户ID
+                STATE:2	//状态：0 待出库  1 出库   2删除
+
+            }).then(res=>{
+                let {code,data}= res;
+                if(code==0) {
+                    Notify({ type: 'success', message: '删除成功' });
+                    this.getSampleListByOut()
+                }
+            }).catch(error=>console.log(error))
+        })
+        .catch(() => {
+            // on cancel
+        });
     },
-    getSampleList() {
+    change() {
+      this.getSampleListByOut()
+    },
+    getSampleListByOut() {
       this.loading = true
-      let state = {
-        '预警':1,
-        '正常':2
-      }
-      getSampleList({
-        SEARCH:'',						//搜索值
-        STATE:'',						//状态（1：入库  2：出库  3：报废）
-        ISYJ:state[this.active],							//预警值（1：预警值 2：正常）
-        PAGE:this.currentPage,
-        NUM:5
+      getSampleListByOut({
+        LIB_ID:this.$route.query.id
       }).then(res=>{
          let {code,data}= res;
           if(code==0) {
             console.log(data)
             data.list.map(item=>{
-              item['checked'] = false;
               if(!!item.SMALL_TRAY) {
                   item.wz = item.SMALL_SARK + "-" + item.TRAY + "-" + item.SMALL_TRAY;
                 } else if(!item.SMALL_TRAY && !!item.TRAY ) {
@@ -138,7 +158,10 @@ export default {
             this.TOTAL_NUM = data.TOTAL_NUM;
             this.loading = false
           }
-      }).catch(error=>console.log(error))
+      }).catch(error=>{
+          console.log(error)
+          this.loading = false
+      })
     },
     
     onClickLeft() {
@@ -175,8 +198,14 @@ export default {
       })
     },
     onSubmit(values) {
+        this.$router.push({
+            name:'Checkoutscan',
+            query:{
+                id:this.$route.query.id
+            }
+        })
       console.log(values);
-      this.show1 = true;
+    //   this.show1 = true;
       return;
       
     },
@@ -288,11 +317,12 @@ export default {
     position:fixed;
     position: fixed;
     bottom: 0;
-      left: 0;
+    left: 0;
     right: 0;
     margin: auto;
     display: flex;
-    justify-content: space-between;
+    // justify-content: space-between;
+    justify-content: center;
     align-items: center;
     padding:0 30px;
     box-sizing: border-box;

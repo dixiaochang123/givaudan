@@ -3,11 +3,16 @@
     <van-nav-bar title="样本入库" left-text="" left-arrow fixed @click-left="onClickLeft" />
     <div style="height: 46px"></div>
     <van-form @submit="onSubmit">
-      <van-field readonly :label="'样本：'+addressInfo.PHYSICAL_SAMPLE"></van-field>
-      <van-field :left-icon="ylicon" v-model="addressInfo.MATERIAL" readonly label="原料" />
-      <van-field :left-icon="pcicon" v-model="addressInfo.BATCH" readonly label="批次" />
-      <van-field :left-icon="bzicon" v-model="addressInfo.PLANT" readonly label="包装" />
-      <van-field :left-icon="zbqicon" v-model="addressInfo.SLED" readonly label="质保期" />
+      <!-- 样本：PHYSICAL_SAMPLE
+      原料：MATERIAL
+      批次：BATCH
+      包装：PLANT
+      质保期：SLED -->
+      <van-field readonly :label="'PHYSICAL_SAMPLE：'+addressInfo.PHYSICAL_SAMPLE"></van-field>
+      <van-field :left-icon="ylicon" v-model="addressInfo.MATERIAL" readonly label="MATERIAL" />
+      <van-field :left-icon="pcicon" v-model="addressInfo.BATCH" readonly label="BATCH" />
+      <van-field :left-icon="bzicon" v-model="addressInfo.PLANT" readonly label="PLANT" />
+      <van-field :left-icon="zbqicon" v-model="addressInfo.SLED" readonly label="SLED" />
       <van-field :left-icon="lygficon" v-model="addressInfo.SARK_" readonly label="留样柜" />
       <van-field :left-icon="wzicon" v-model="wz" readonly :rules="[{ required: true, message: '请选择具体位置' }]" label="具体位置" right-icon="arrow" @click="showname1 = true" />
       <div style="margin: 16px">
