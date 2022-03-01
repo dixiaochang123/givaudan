@@ -64,7 +64,7 @@ export default {
         }).then(res=>{
           let {code,msg} = res;
           console.log(code)
-          if(code==0) {
+          if(code==0 && data=="") {
             Dialog.confirm({
               title: '提示',
               message: msg,
@@ -94,7 +94,7 @@ export default {
             });
   
           }
-          if(code==1) {
+          if(code==1&& data!=="") {
             Dialog.alert({
               message: msg,
               confirmButtonText:"取消"

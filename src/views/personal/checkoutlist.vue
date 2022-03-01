@@ -26,7 +26,7 @@
       <van-field v-if="item.SARK" :left-icon="wzicon" v-model="item.wz" readonly label="具体位置"  />
       <!-- <van-field :left-icon="jlbficon" v-model="item.DAY + '天'" readonly label="距离报废"  /> -->
     </van-form> 
-    <van-pagination v-if="list.length!==0" v-model="currentPage" :total-items="TOTAL_NUM" :items-per-page="5" @change="change" />
+    <van-pagination v-if="false" v-model="currentPage" :total-items="TOTAL_NUM" :items-per-page="5" @change="change" />
     <div style="height:80px;"></div>
     <div class="btns">
         <!-- <van-checkbox v-model="checkedall" @change="checkedallchange">全选</van-checkbox> -->
@@ -127,7 +127,9 @@ export default {
                     Notify({ type: 'success', message: '删除成功' });
                     this.getSampleListByOut()
                 }
-            }).catch(error=>console.log(error))
+            }).catch(error=>{
+                
+            })
         })
         .catch(() => {
             // on cancel
@@ -155,7 +157,7 @@ export default {
                 }
             })
             this.list = data.list;
-            this.TOTAL_NUM = data.TOTAL_NUM;
+            // this.TOTAL_NUM = data.TOTAL_NUM;
             this.loading = false
           }
       }).catch(error=>{
