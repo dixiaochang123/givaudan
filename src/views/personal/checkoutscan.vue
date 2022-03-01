@@ -80,7 +80,10 @@ export default {
                   let {code,data}= res;
                   if(code==0) {
                       this.$router.push({
-                        name:"Checkoutlist"
+                        name:"Checkoutlist",
+                        query:{
+                          id:this.$route.query.id
+                        }
                       })
                   }
               }).catch(error=>console.log(error))
@@ -106,7 +109,10 @@ export default {
                   let {code,data}= res;
                   if(code==0) {
                       this.$router.push({
-                        name:"Checkoutlist"
+                        name:"Checkoutlist",
+                        query:{
+                          id:this.$route.query.id
+                        }
                       })
                   }
               }).catch(error=>console.log(error))
