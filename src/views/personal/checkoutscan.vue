@@ -29,18 +29,8 @@ export default {
     ...mapGetters(["userInfo"])
   },
   mounted() {
-    
-    
     window.android.startOrStopScan('1')
     window.setScanResult = this.setScanResult
-      // this.time = setTimeout(()=>{
-      //   this.$router.push({
-      //       name:'Checkout',
-      //       query: {
-      //         sample:'801776487'
-      //       }
-      //   })
-      // },1500)
   },
   destroyed () {
     clearTimeout(this.time)
@@ -65,7 +55,6 @@ export default {
       }).catch((error=>conosle.log(error)))
     },
     getSampleSate() {
-
       getSampleSate({
           //  LIB_ID:this.$route.query.id,
           //  SAM_ID:result

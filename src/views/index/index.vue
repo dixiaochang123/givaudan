@@ -57,7 +57,7 @@
           <p class="p3">Sample return</p>
           <img src="../../assets/qihuadun/归还.png" alt="" srcset="">
         </div>
-        <div class="flex-2 flex-4" @click="scrapprocess">
+        <div style="visibility: hidden;" class="flex-2 flex-4" @click="scrapprocess">
           <p class="p1">报废流程</p>
           <p class="p2"></p>
           <p class="p3">Sample delivery</p>

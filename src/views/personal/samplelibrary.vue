@@ -84,7 +84,13 @@ export default {
   },
   methods: {
     scanning() {
-
+      window.android.startOrStopScan('1')
+      window.setScanResult = this.setScanResult
+    },
+    setScanResult(result) {
+      this.search = result
+      this.getSampleList()
+      
     },
     change() {
       this.getSampleList()
