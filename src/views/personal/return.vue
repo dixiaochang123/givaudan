@@ -107,7 +107,7 @@ export default {
     getSampleMap() {
       getSampleMap({
         SAMPLE: this.$route.query.sample,
-        STATE: "1",
+        STATE: "4",
         SAM_ID: "",
       })
         .then((res) => {
